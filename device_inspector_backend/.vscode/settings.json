@@ -1,0 +1,44 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "postgres",
+      "username": "postgres",
+      "database": "postgres",
+      "password": "postgres"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "demo",
+      "password": "postgres",
+      "database": "demo",
+      "username": "postgres"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 8014,
+      "driver": "PostgreSQL",
+      "name": "course",
+      "database": "course",
+      "username": "postgres",
+      "password": "postgres"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "device_inspector",
+      "group": "x-keeper",
+      "database": "device_inspector",
+      "username": "postgres"
+    }
+  ]
+}

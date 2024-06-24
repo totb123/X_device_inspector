@@ -1,0 +1,82 @@
+services:
+  frontend:
+    container_name: "dci_frontend"
+    build:
+      context: ./device_inspector_frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    # env_file:
+    #   - device_inspector_frontend/.env
+    depends_on:
+      backend:
+        condition: service_started
+  
+  backend:
+    container_name: "dci_backend"
+    build:
+      context: ./device_inspector_backend
+      dockerfile: Dockerfile
+    command: python /root/app/app.py
+
+    ports: 
+      - "9090:8090"
+    depends_on:
+      dci_postgres:
+        condition: service_started
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@dci_postgres:5432/device_inspector
+      - SERVICE_ADDRESS=/api
+      - FILE_PATH=/static
+    volumes:
+      - uploads:/static:ro
+  
+  x_device_ins:
+    container_name: 'x_device_ins'
+    build: 
+      context: ./X_device_ins
+      dockerfile: Dockerfile
+    ports:
+    - "9091:8091"
+    volumes:
+      - uploads:/static:rw
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@dci_postgres:5432/device_inspector
+      - SERVICE_ADDRESS=/api
+      - FILE_PATH=/static
+    depends_on: 
+      backend:
+        condition: service_started
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      frontend:
+        condition: service_started
+      backend: 
+        condition: service_started
+      x_device_ins: 
+        condition: service_started
+
+  dci_postgres:
+    container_name: "dci_postgres"
+    image: postgres:latest
+    ports:
+      - "5440:5432"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: device_inspector
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  uploads:

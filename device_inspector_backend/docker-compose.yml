@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  devices_inspector:
+    container_name: devices_inspector
+    build: .
+    ports:
+      - "9090:9090"
+#    понадобятся, когда будет база данных
+#    volumes:
+#      - ../public_storage:/root/app/src/core/modules/processor/storage/
+#      - ../private_storage:/root/app/src/core/modules/manager/storage/

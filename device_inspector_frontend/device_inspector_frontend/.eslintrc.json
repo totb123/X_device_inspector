@@ -1,0 +1,86 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "env": {
+        "node": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "eslint:recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "script"
+        // "es2021": true
+        // "requireConfigFile": false
+    },
+    // "overrides": [
+    //     {
+    //         "files": "./src/*/*.ts",
+    //         "parser": "@babel/eslint-parser"
+    //     }
+    // ],
+    "plugins": [
+        "react",
+        "eslint-plugin-react-hooks",
+        "@stylistic"
+    ],
+    "rules": {
+        // добавлено, потому что изначально eslint:recommended кидает error
+        "no-unused-vars": ["warn", {
+            // проверять все переменные
+            "vars": "all",
+            // когда передаются аргументы функции, ошибки не будет, если используется хотя бы последний
+            "args": "after-used",
+            // чтобы были использованы объекты ошибок в try-catch
+            "caughtErrors": "all",
+            // чтобы можно было писать что-то типа 
+            // {foo, ...data} = data
+            // var bar
+            // ({bar, ...data} = data)
+            "ignoreRestSiblings": true
+        }],
+        "no-useless-return":"warn",
+        // убирает необходимость в конце строки ставить ;
+        "semi":["warn", "never"],
+        // для того чтобы в конце все ставили запятую
+        "comma-dangle": [
+            "error", {
+                "arrays": "only-multiline",
+                "objects": "only-multiline",
+                "imports": "only-multiline",
+                "exports": "only-multiline"
+        }],
+        // для одинарных кавычек у строк. Разрешает использовать ``, чтобы не заниматься ересью
+        "quotes":["error", "single", {
+            "allowTemplateLiterals": true
+        }],
+        // для более читаемых {блоков}. Он будет требовать {} только в случае, если у нас вложенные блоки или
+        // объекты внутри однострочных блоков
+        "curly": ["warn", "multi-or-nest"],
+        // а вот тут у нас скобочки, будет запрещать их избыток за исключением приведенных ниже случаев
+        "@stylistic/no-extra-parens": ["error","all", {
+            // эти два чисто чтоб не путаться в вычислениях типа (a + b) / 2
+            "nestedBinaryExpressions": false,
+            // для выделения условия в тернарнике
+            "ternaryOperandBinaryExpressions": false,
+            // для блоков, относящихся к верстке будет применяться только в том случае, если они многострочны будет
+            "ignoreJSX": "multi-line",
+            //? чтобы можно было делать (new A()).field
+            "enforceForNewInMemberExpressions": false
+        }],
+        // два пробела отступа
+        "@stylistic/indent": ["error", 2],
+        // для того чтобы убирать круглые скобки в случае одного аргумента
+        "@stylistic/arrow-parens": ["error","as-needed"],
+        "@stylistic/max-len": ["error", {
+            // максимальная длина строки кода
+            "code": 75,
+            // максимамальная длина строки комментария
+            "comments": 60,
+            // разрешает вставлять url-строки
+            "ignoreUrls": true
+        }],
+        "react/jsx-key": "warn"
+    }
+}

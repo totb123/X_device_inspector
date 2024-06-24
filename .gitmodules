@@ -1,0 +1,9 @@
+[submodule "device_inspector_backend"]
+	path = device_inspector_backend
+	url = https://github.com/totb123/device_inspector.git
+[submodule "device_inspector_frontend"]
+	path = device_inspector_frontend
+	url = https://github.com/Artemidividiy/device_inspector_frontend.git
+[submodule "X_device_ins"]
+	path = X_device_ins
+	url = https://github.com/totb123/X_device_ins.git
