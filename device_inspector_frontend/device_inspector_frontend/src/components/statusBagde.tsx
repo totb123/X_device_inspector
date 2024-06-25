@@ -8,12 +8,12 @@ import { BoardStatus } from '../types/boardType'
 import useStatusUpdate from '../hooks/useStatusUpdate'
 
 type StatusProps = {
-  datamatrix: number
+  inspectionId: number
   inner: boolean
 }
 
 export const StatusBagde: React.FC<StatusProps> = (
-  {datamatrix, inner}
+  {inspectionId, inner}
 ) => {
 
   const {
@@ -21,7 +21,7 @@ export const StatusBagde: React.FC<StatusProps> = (
     statusLoading, 
     statusUpdate, 
     statusGet
-  } = useStatusUpdate(datamatrix)
+  } = useStatusUpdate(inspectionId)
 
   const handleChange = (value: string) => {
     switch (value) {

@@ -98,7 +98,7 @@ export const MainPage: React.FC = () => {
                   <Col className='gutter-row' span={20}>
                     <Input 
                       value={updatedCoordinates[index + 4]}
-                      onChange={value => handleCoordinateChange(index, value.target.value)}/>
+                      onChange={value => handleCoordinateChange(index + 4, value.target.value)}/>
                   </Col>
                 </Form.Item>)
               }
