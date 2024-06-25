@@ -28,7 +28,6 @@ def get_dm_position(sector_id):
     return top_dict, bot_dict
 
 
-
 def insert_inspections(inspection):
     db = get_connection()
     db.begin()
@@ -60,8 +59,7 @@ def insert_inspections(inspection):
             new_board_id = 1
         for i in range(1, 9):
             new_board = Board(id=new_board_id + i, multiboard_id=new_multiboard_id,
-                              datamatrix=inspection.dm_values[i - 1],
-                              status='UNCHECKED')
+                              datamatrix=inspection.dm_values[i - 1])
             db.add(new_board)
         db.flush()
     else:
@@ -74,7 +72,7 @@ def insert_inspections(inspection):
         new_inspection_id = 1
     new_inspection = Inspection(id=new_inspection_id, time=inspection.datetime,
                                 multiboard_id=new_multiboard_id, url_image=inspection.img_path,
-                                sector_id=inspection.sector_id)
+                                sector_id=inspection.sector_id, status='UNCHECKED')
     db.add(new_inspection)
     try:
         db.commit()
