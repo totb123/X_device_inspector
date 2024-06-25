@@ -15,7 +15,6 @@ class Board(BaseModel):
     # code: Optional[str] | None
     datamatrix: int
     multiboard_id: int
-    status: BoardStatus
     model_config = ConfigDict(from_attributes=True)
 
 class MultiBoard(BaseModel):
@@ -27,8 +26,11 @@ class MultiBoard(BaseModel):
 class CommentBase(BaseModel):
     pass
 
+
 class CommentCreate(CommentBase):
     text: str
+
+
 class Comment(CommentCreate):
     id: int
     
@@ -37,14 +39,15 @@ class Sector(BaseModel):
     id: int
     step_num: int
     name: str
+
+
 class Inspection(BaseModel):
     id: int
     sector_id: int
     multiboard_id: int
     url_image: str
     time: datetime
-
-
+    status: BoardStatus
 
 
 class InspectionsFilter(BaseModel):
