@@ -107,8 +107,8 @@ async def get_coordinaes_endpoint(sector_id: int, side: str) -> schemas.SectorDM
     return get_coordinates(sector_id, side)
 
 @app.get('/get_status')
-async def get_status_endpoint(datamatrix: str):
-    res = db.get_status_by_dm(datamatrix)
+async def get_status_endpoint(inspection_id: int):
+    res = db.get_status_by_dm(inspection_id)
     return res
 
 
