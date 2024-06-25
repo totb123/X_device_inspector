@@ -1,6 +1,6 @@
 import Card from 'antd/es/card/Card'
 import React from 'react'
-import {Button, Divider, Image, Space, Typography} from 'antd'
+import {Button, Divider, Image, Space, Tag, Typography} from 'antd'
 import { TInspection } from '../types/inspectionType'
 import { SectorBadge } from './sectorBagde'
 import { DataMatrix } from './datamatrixGrid'
@@ -35,6 +35,11 @@ export const InspectionCard: React.FC<InspectionCardProps> = (
           </Typography>
           <TimeParagraph time={inspection.time}/>
           <Divider style={{'margin': 0}}/>
+          <Typography>
+            Статус:
+          </Typography>
+          <Tag>{inspection.status}</Tag>
+          <Divider style={{'margin': 0}}/>
           <div style={{minWidth: 360}}>
             <DataMatrix 
               highlightedDatamatrix={highlightedDatamatrices}
@@ -53,7 +58,7 @@ type TimeParagraphProps = {
 }
 const TimeParagraph: React.FC<TimeParagraphProps> = ({time}) => {
   const convertTime = () => {
-    return time.toLocaleString().split('T').map(element => element + ' ')
+    return time.toLocaleString().replace('T', ' ').split('.')[0]
   }
   return (<Text code>
     {convertTime()}
