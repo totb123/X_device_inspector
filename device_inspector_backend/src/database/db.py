@@ -65,22 +65,22 @@ def add_inspection_image(inspection_id: int, image_path: str):
     except: 
         return False
 
-def get_status_by_dm(dm):
+def get_status_by_dm(inspection_id):
     db = get_connection()
     res = ''
-    query = db.query(models.Board.status).filter_by(datamatrix=dm).first()
+    query = db.query(models.Inspection.status).filter_by(id=inspection_id).first()
     if query:
         res = query[0]
     db.close()
     return res
 
 
-def change_status_by_dm(dm, new_status):
+def change_status_by_dm(inspection_id, new_status):
     db = get_connection()
-    query_m = db.query(models.Board.multiboard_id).filter_by(datamatrix=dm).first()
+    query_m = db.query(models.Inspection).filter_by(id=inspection_id).first()
     query_change = None
     if query_m:
-        query_change = db.query(models.Board).filter_by(multiboard_id=query_m[0]).update({models.Board.status: new_status})
+        query_change = db.query(models.Inspection).filter_by(id=inspection_id).update({models.Inspection.status: new_status})
         db.commit()
         db.close()
     if query_change:

@@ -114,8 +114,8 @@ async def get_status_endpoint(datamatrix: str):
 
 # статус бордов
 @app.post('/change_status')
-async def change_status_endpoint(datamatrix: str, new_status: str) -> bool:
-    res = db.change_status_by_dm(datamatrix, new_status)
+async def change_status_endpoint(inspection_id: str, new_status: str) -> bool:
+    res = db.change_status_by_dm(inspection_id, new_status)
     return res
 
 
