@@ -24,21 +24,20 @@ const convertStatusString = (
 }
 
 export default function useStatusHandler(
-  datamatrix: number
+  inspectionId: number
 ) {
-
   const [status, setStatus] = useState<BoardStatus | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const get = async () => {
     setLoading(true)
-    getStatus(datamatrix).then(
+    getStatus(inspectionId).then(
       value => setStatus(convertStatusString(value))
     )
     setLoading(false)
   }
   const update = async (newStatus: BoardStatus) => {
     setLoading(true)
-    updateStatus(datamatrix, newStatus).then(
+    updateStatus(inspectionId, newStatus).then(
       () => setStatus(newStatus)
     )
     setLoading(false)

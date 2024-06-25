@@ -2,26 +2,26 @@ import { BoardStatus } from '../types/boardType'
 
 function getParams(datamatrix: number, newStatus?: string) {
   const params = new URLSearchParams()
-  params.append('datamatrix', datamatrix.toString())
+  params.append('inspection_id', datamatrix.toString())
   if (newStatus !== undefined)
     params.append('new_status', newStatus)
   return params
 }
 
-export async function getStatus(datamatrix: number): Promise<String> {
+export async function getStatus(inspectionId: number): Promise<String> {
   const res = await fetch(
     // eslint-disable-next-line @stylistic/max-len
-    `${process.env.REACT_APP_API_BASE_URL}/get_status?${getParams(datamatrix)}`
+    `${process.env.REACT_APP_API_BASE_URL}/get_status?${getParams(inspectionId)}`
   )
   return await res.json()
 }
 
 export async function updateStatus(
-  datamatrix: number, newStatus: BoardStatus
+  inspectionId: number, newStatus: BoardStatus
 ): Promise<Boolean> {
   const res = await fetch(
     // eslint-disable-next-line @stylistic/max-len
-    `${process.env.REACT_APP_API_BASE_URL}/change_status?${getParams(datamatrix, newStatus)}`, 
+    `${process.env.REACT_APP_API_BASE_URL}/change_status?${getParams(inspectionId, newStatus)}`, 
     { method: 'POST' }
   )
   return await res.json()

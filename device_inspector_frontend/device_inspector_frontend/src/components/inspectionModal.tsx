@@ -115,7 +115,7 @@ const DataDisplay: React.FC<DataDisplayProps> = (
         <Col>
           <StatusBagde 
             inner
-            datamatrix={boards[0].datamatrix}
+            inspectionId={inspection.id}
           />
           <DataMatrix 
             inner
