@@ -38,12 +38,28 @@ def insert_inspections(inspection):
     for multiboard_set_id in multiboard_set:
         board_list = [elem[0] for elem in db.query(Board.datamatrix).filter(Board.multiboard_id ==
                                                                             multiboard_set_id).all()]
-        if board_list == inspection.dm_values:
-            create_new_boards = False
-            break
-        else:
-            create_new_boards = True
+        board_list_1 = [elem for elem in
+                        db.query(Board.id, Board.datamatrix, Board.multiboard_id).filter(Board.multiboard_id ==
+                                                                                         multiboard_set_id).all()]
+        for board_list_dm in board_list_1:
+            if not create_new_boards:
+                break
+            new_multiboard_id = board_list_dm[2]
+            for inspection_dm in inspection.dm_values:
+                if board_list_dm[1] != '0' and board_list_dm[1] == inspection_dm:
+                    create_new_boards = False
 
+                    print(board_list_dm[1], create_new_boards, inspection_dm)
+                    break
+                else:
+                    create_new_boards = True
+        if not create_new_boards:
+            break
+    print(board_list, inspection.dm_values, create_new_boards, new_multiboard_id)
+    for index in range(len(board_list)):
+        if board_list[index] != '0' and inspection.dm_values[index] == '0':
+            inspection.dm_values[index] = board_list[index]
+    print(inspection.dm_values)
     if create_new_boards:
         if last_multiboard:
             new_multiboard_id = last_multiboard.multiboard_id + 1
@@ -63,7 +79,12 @@ def insert_inspections(inspection):
             db.add(new_board)
         db.flush()
     else:
-        new_multiboard_id = db.query(Board.multiboard_id).filter_by(datamatrix=str(inspection.dm_values[0])).first()[0]
+        update_id = [id_[0] for id_ in db.query(Board.id).
+            filter(Board.multiboard_id == new_multiboard_id).order_by(Board.id).all()]
+        for index in range(len(update_id)):
+            db.query(Board).filter(Board.id == update_id[index]).update(
+                {Board.datamatrix: inspection.dm_values[index]})
+        db.commit()
     last_inspection_id = db.query(Inspection).order_by(Inspection.id.desc()).first()
 
     if last_inspection_id:
