@@ -10,7 +10,7 @@ SQLALCHEMY_DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:
 
 def get_boards_by_multiboard_id(multiboard_id):
     db = get_connection()
-    query = db.query(models.Board).filter_by(multiboard_id=multiboard_id).all()        
+    query = db.query(models.Board).filter_by(multiboard_id=multiboard_id).order_by(models.Board.id).all()
     boards = [schemas.Board(**element.__dict__) for element in query]
     db.close()
     return boards
