@@ -3,20 +3,20 @@ import {
   getStatus, 
   updateStatus 
 } from '../services/statusService'
-import { BoardStatus } from '../types/boardType'
+import { InspectionStatus } from '../types/inspectionType'
 
 const convertStatusString = (
   statusString: String
-): BoardStatus | undefined => {
+): InspectionStatus | undefined => {
   switch (statusString) {
     case 'NORMAL':
-      return BoardStatus.NORMAL 
+      return InspectionStatus.NORMAL 
       
     case 'UNCHECKED':
-      return BoardStatus.UNCHECKED
+      return InspectionStatus.UNCHECKED
       
     case 'DEFECTIVE':
-      return BoardStatus.DEFECTIVE
+      return InspectionStatus.DEFECTIVE
       
     default:
       break
@@ -26,7 +26,9 @@ const convertStatusString = (
 export default function useStatusHandler(
   inspectionId: number
 ) {
-  const [status, setStatus] = useState<BoardStatus | undefined>(undefined)
+  const [status, setStatus] = useState<
+  InspectionStatus | undefined
+  >(undefined)
   const [loading, setLoading] = useState(false)
   const get = async () => {
     setLoading(true)
@@ -35,7 +37,7 @@ export default function useStatusHandler(
     )
     setLoading(false)
   }
-  const update = async (newStatus: BoardStatus) => {
+  const update = async (newStatus: InspectionStatus) => {
     setLoading(true)
     updateStatus(inspectionId, newStatus).then(
       () => setStatus(newStatus)

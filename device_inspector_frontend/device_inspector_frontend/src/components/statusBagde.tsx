@@ -4,16 +4,17 @@ import {
   Spin
 } from 'antd'
 import React, { useEffect } from 'react'
-import { BoardStatus } from '../types/boardType'
+import { InspectionStatus } from '../types/inspectionType'
 import useStatusUpdate from '../hooks/useStatusUpdate'
 
 type StatusProps = {
   inspectionId: number
   inner: boolean
+  changeStatus: Function 
 }
 
 export const StatusBagde: React.FC<StatusProps> = (
-  {inspectionId, inner}
+  {inspectionId, inner, changeStatus}
 ) => {
 
   const {
@@ -26,13 +27,16 @@ export const StatusBagde: React.FC<StatusProps> = (
   const handleChange = (value: string) => {
     switch (value) {
       case 'NORMAL':
-        statusUpdate(BoardStatus.NORMAL)
+        statusUpdate(InspectionStatus.NORMAL)
+        changeStatus(true)
         break
       case 'UNCHECKED':
-        statusUpdate(BoardStatus.UNCHECKED)
+        statusUpdate(InspectionStatus.UNCHECKED)
+        changeStatus(true)
         break
       case 'DEFECTIVE':
-        statusUpdate(BoardStatus.DEFECTIVE)
+        statusUpdate(InspectionStatus.DEFECTIVE)
+        changeStatus(true)
         break
       default:
         break

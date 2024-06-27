@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState} from 'react'
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react'
 
 import {List, Pagination, Spin, Typography} from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
@@ -10,6 +10,8 @@ import { useFilter } from '../context/searchFilterContext'
 
 type InspectionListProps = {
   toggleModal: Function
+  isChangeStatus: boolean
+  setIsChangeStatus: Function
 }
 
 export const InspectionList: React.FC<InspectionListProps> = props => {
@@ -36,6 +38,15 @@ export const InspectionList: React.FC<InspectionListProps> = props => {
     return () => {
     }
   }, [filter, currentPage, pageSize, inspectionsTotal.refetch])
+
+  useEffect(() => {
+    if (props.isChangeStatus) {
+      (inspectionsRefetch as Function)()
+      inspectionsTotal.refetch()
+      props.setIsChangeStatus(false)
+    }
+  }, [props.isChangeStatus])
+
   if (inspectionsStatus == 'error') {
     return <div>
       <Paragraph>

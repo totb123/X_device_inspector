@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Title from 'antd/es/typography/Title'
 import {useInspectionModal} from '../hooks/useInspectionModal'
 import {
@@ -11,6 +11,9 @@ import { InspectionList } from './inspectionList'
 
 
 export function MainPage() {
+  const [
+    isChangeStatus, 
+    setIsChangeStatus] = useState<boolean>(false)
   const {
     toggleModal,
     isModalShown,
@@ -19,13 +22,16 @@ export function MainPage() {
   return <HistoryFilterContextProvider>
     <Title level={1}>История инспекций</Title>
     <InspectionFilterModal/>
-    <InspectionList toggleModal={toggleModal} />
+    <InspectionList toggleModal={toggleModal} 
+      isChangeStatus={isChangeStatus}
+      setIsChangeStatus={setIsChangeStatus}/>
     {
       modalData != undefined 
         ? <InspectionModal 
           modalData={modalData} 
           isModalVisible={isModalShown} 
-          handleModal={toggleModal}/>
+          handleModal={toggleModal}
+          setIsChangeStatus={setIsChangeStatus}/>
         : <></>
     }
   </HistoryFilterContextProvider>
