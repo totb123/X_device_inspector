@@ -8,6 +8,8 @@ import { useFilter } from '../context/historyFilterContext'
 
 type InspectionListProps = {
   toggleModal: Function
+  isChangeStatus: boolean
+  setIsChangeStatus: Function
 }
 
 export const InspectionList: React.FC<InspectionListProps> = props => {
@@ -34,6 +36,15 @@ export const InspectionList: React.FC<InspectionListProps> = props => {
     return () => {
     }
   }, [filter, currentPage, pageSize, inspectionsTotal.refetch])
+
+  useEffect(() => {
+    if (props.isChangeStatus) {
+      (inspectionsRefetch as Function)()
+      inspectionsTotal.refetch()
+      props.setIsChangeStatus(false)
+    }
+  }, [props.isChangeStatus])
+  
   if (inspectionsStatus == 'error') {
     return <div>
       <Paragraph>

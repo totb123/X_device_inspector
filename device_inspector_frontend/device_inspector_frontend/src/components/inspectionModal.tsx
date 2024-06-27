@@ -8,7 +8,6 @@ import {
   Card} from 'antd'
 import React, {useEffect } from 'react'
 import { TInspection } from '../types/inspectionType'
-import { TBoard } from '../types/boardType'
 import { LoadingOutlined } from '@ant-design/icons'
 import { SectorBadge } from './sectorBagde'
 import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardGet'
@@ -21,6 +20,7 @@ type InspectionModalData = {
   isModalVisible: boolean
   highlightedDatamatrices?: string[]
   handleModal: Function
+  setIsChangeStatus: Function
 }
 
 export const InspectionModal:
@@ -29,6 +29,7 @@ React.FC<InspectionModalData> = ({
   isModalVisible,
   highlightedDatamatrices,
   handleModal,
+  setIsChangeStatus,
 })  => {
   const {
     boards, 
@@ -54,7 +55,7 @@ React.FC<InspectionModalData> = ({
       boards !== undefined 
         ? 
         <DataDisplay 
-          boards={boards} 
+          changeStatus={setIsChangeStatus}
           inspection={modalData} 
           highlightedDatamatrices={highlightedDatamatrices}
         />    
@@ -75,12 +76,12 @@ React.FC<InspectionModalData> = ({
 
 type DataDisplayProps = {
   inspection: TInspection
-  boards: TBoard[]
+  changeStatus: Function
   highlightedDatamatrices?: string[]
 }
 
 const DataDisplay: React.FC<DataDisplayProps> = (
-  {inspection, boards,highlightedDatamatrices}
+  {inspection, changeStatus, highlightedDatamatrices}
 ) => {
   return (
     <>
@@ -116,6 +117,7 @@ const DataDisplay: React.FC<DataDisplayProps> = (
           <StatusBagde 
             inner
             inspectionId={inspection.id}
+            changeStatus={changeStatus}
           />
           <DataMatrix 
             inner

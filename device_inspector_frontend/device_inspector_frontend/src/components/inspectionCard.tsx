@@ -38,7 +38,7 @@ export const InspectionCard: React.FC<InspectionCardProps> = (
           <Typography>
             Статус:
           </Typography>
-          <Tag>{inspection.status}</Tag>
+          <>{convertStatusString(inspection.status)}</>
           <Divider style={{'margin': 0}}/>
           <div style={{minWidth: 360}}>
             <DataMatrix 
@@ -63,4 +63,22 @@ const TimeParagraph: React.FC<TimeParagraphProps> = ({time}) => {
   return (<Text code>
     {convertTime()}
   </Text>)
+}
+
+const convertStatusString = (
+  statusString: String
+) => {
+  switch (statusString) {
+    case 'NORMAL':
+      return <Tag color={'green'}>Проверено</Tag>
+      
+    case 'UNCHECKED':
+      return <Tag>Не проверено</Tag>
+      
+    case 'DEFECTIVE':
+      return <Tag color={'red'}>Брак</Tag>
+      
+    default:
+      return <Tag>Статус неизвестен</Tag>
+  }
 }

@@ -14,6 +14,9 @@ export const MainPage: React.FC = () => {
   const [
     highlightedDatamatrices, 
     setHighlightedDatamatrices] = useState<string[] | undefined>(undefined)
+  const [
+    isChangeStatus, 
+    setIsChangeStatus] = useState<boolean>(false)
   const {
     toggleModal,
     isModalShown,
@@ -28,14 +31,17 @@ export const MainPage: React.FC = () => {
     <SearchFilterContextProvider>
       <Title level={1}>Поиск инспекций</Title>
       <SearchFilterModal/>
-      <InspectionList toggleModal={toggleModal}/>
+      <InspectionList toggleModal={toggleModal}
+        isChangeStatus={isChangeStatus}
+        setIsChangeStatus={setIsChangeStatus}/>
       {
         modalData != undefined
           ? <InspectionModal 
             modalData={modalData} 
             isModalVisible={isModalShown} 
             highlightedDatamatrices={highlightedDatamatrices}
-            handleModal={toggleModal}/>
+            handleModal={toggleModal}
+            setIsChangeStatus={setIsChangeStatus}/>
           : <></>
       }
     </SearchFilterContextProvider>
