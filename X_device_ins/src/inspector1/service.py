@@ -14,5 +14,5 @@ def get_inspection(sector_id, camera_list):
     image = ICamController().get_image(sector_data.camera)
     side, dm_data = IDmDetector().dm_decode(image, sector_data.coordinates)
     inspection_data = Inspection(image, dm_data, side, dtime, sector_id)
-    print(dm_data)
+    print(dm_data) # !review! этот принт вообще удалить сразу
     return InspectionRepository().image_repo_crud(inspection_data)
