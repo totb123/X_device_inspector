@@ -3,6 +3,7 @@ import cv2
 import random
 
 # функция для обрезания нужной области фотографии и распознования datamatrix'а
+# !review! Функция должна отвечать за одно действие
 def decode_datamatrix(img, dm_position):
     list_coordinates = list(map(int, dm_position.split(',')))
 
@@ -40,7 +41,7 @@ def dm_detect(index, true_coords, result, image):
 
 class IDmDetector:
     def __init__(self):
-        self.result = ["0", "0", "0", "0", "0", "0", "0", "0"]
+        self.result = ["0", "0", "0", "0", "0", "0", "0", "0"] # !review! не result, а что-то более понятное
 
     def dm_decode(self, image, coords):
         index, true_coords, side = choose_side(image, coords, self.result)

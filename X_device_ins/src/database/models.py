@@ -105,7 +105,7 @@ class Inspection(Base):
 
 class Multiboard(Base):
     __tablename__ = 'multiboards'
-    multiboard_id = Column(Integer, primary_key=True)
+    multiboard_id = Column(Integer, primary_key=True)  # !review! переименовать multiboard_id на id
 
 
 class Board(Base):
