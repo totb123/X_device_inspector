@@ -1,7 +1,7 @@
 from typing import List
 
 from src.mock import build_fake_multi_boards
-from src.schema import MultiBoard
+from src.schemas import MultiBoard
 from src.schemas import MultiBoardsFilter
 
 multi_boards = build_fake_multi_boards()

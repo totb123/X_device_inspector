@@ -90,8 +90,9 @@ def change_status_by_dm(inspection_id, new_status):
 
 def get_comments_by_datamatrix(board_datamatrix: int): 
     db = get_connection()
-    multiboard_id = db.query(models.Board).filter_by(datamatrix = board_datamatrix).first().multiboard_id
-
+    multiboard_id = db.query(models.Board).filter_by(
+        datamatrix = board_datamatrix
+        ).first().multiboard_id
     return multiboard_id
 
 def get_comments_by_inspection(inspection_id: int):

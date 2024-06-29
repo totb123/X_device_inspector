@@ -1,11 +1,10 @@
 import pytz
 from typing import List
 import src.schemas as schemas 
-from src.mock import build_fake_inspections, build_fake_multi_boards
+from src.mock import build_fake_multi_boards
 from src.schemas import InspectionsFilter
-from src.database.db import get_inspections_by_criteria
 
-# inspections = get_inspections_by_criteria()
+
 multi_boards = build_fake_multi_boards()
 
 

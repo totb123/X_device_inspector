@@ -1,10 +1,7 @@
 from datetime import datetime
-import json
-from typing import List, Optional, Annotated
-import aiofiles
-
+from typing import List
 import uvicorn as uvicorn
-from fastapi import FastAPI, Query, Request, File, UploadFile, Response
+from fastapi import FastAPI, Query, File, UploadFile, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import src.database.db as db
@@ -76,8 +73,6 @@ async def get_inspections_count(
         datamatrices: List[str] = Query(None),
         start_date: datetime | None = None,
         end_date: datetime | None = None,
-        skip: int | None = None,
-        limit: int | None = None
     ):
     filters = InspectionsFilter(
         sector_ids=sector_ids,
