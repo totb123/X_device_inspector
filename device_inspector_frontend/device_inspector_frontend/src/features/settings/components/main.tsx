@@ -144,7 +144,8 @@ export const MainPage: React.FC = () => {
       </Form.Item>
     </Form>
     <div style={{padding: '10px'}}>  
-      <MapperImage path='http://localhost:9090/get_image?path=2024_07_04_11_51_19_1.jpg' 
+      <MapperImage
+        path={`${process.env.REACT_APP_API_BASE_URL}/get_last_image?sector_id=${sector}&side=${side}`} 
         initCoordinates={markerInitCoordinates}
         handleCoordinateChange={handleCoordinateChange}
         boardIndex={currentBoardIndex} />

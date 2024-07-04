@@ -48,6 +48,7 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
+    side = Column(String)
     comments = relationship(
         'Comment',
         secondary=comments_of_inspection_table, 
