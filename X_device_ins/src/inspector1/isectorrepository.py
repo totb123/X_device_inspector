@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from src.inspector1.dataclasses import Sector, SectorCoords
+from src.inspector1.dataclasses import Sector, SectorCoords, Camera
 from src.inspector1.config import sectors_camera
 from src.database.crud import get_dm_position
+from typing import Optional
 
 
-def extract_coordinates(dm_position_result):
+def extract_coordinates(dm_position_result) -> list:
     coordinates_list = []
     start_flag = False
     for key, value in dm_position_result.items():
@@ -15,7 +16,7 @@ def extract_coordinates(dm_position_result):
     return coordinates_list
 
 
-def get_camera(sector_id, camera_list):
+def get_camera(sector_id: int, camera_list: list) -> Optional[Camera]:
     for camera in camera_list:
         if camera.id == sectors_camera[sector_id]:
             return camera
@@ -30,7 +31,7 @@ def get_coordinates(sector_id: int) -> SectorCoords:
 
 
 class ISectorRepository:
-    def get_sector_data(self, sector_id: int, camera_list: list) -> Sector: # !review!  Если начинаешь использовать типы, то создай их во всех функциях. Выглядит хорошо!
+    def get_sector_data(self, sector_id: int, camera_list: list) -> Sector:
         camera = get_camera(sector_id, camera_list)
         sector_coords = get_coordinates(sector_id)
         return Sector(camera, sector_coords)

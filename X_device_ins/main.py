@@ -19,11 +19,6 @@ def get_inspections_endpoint(sector_id: int):
     """
     функция для тестирования
     """
-    # !review! Убрать комментарии
-    # cap = camera_list[0].cap
-    # ret, image = cap.read()
-    # cv2.imshow("sdf", image)
-    # cv2.waitKey(0)
     return get_inspection(sector_id, camera_list)
 
 
