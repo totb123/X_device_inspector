@@ -23,11 +23,11 @@ def choose_side(image, coords, result):
         result_top = decode_datamatrix(image, coords.top[index])
         if result_top != "0":
             result[index] = result_top
-            return index + 1, coords.top, "top"
+            return index + 1, coords.top, True
         result_bot = decode_datamatrix(image, coords.bot[index])
         if result_bot != "0":
             result[index] = result_bot
-            return index + 1, coords.bot, "bot"
+            return index + 1, coords.bot, False
     return None, None, None
 
 
