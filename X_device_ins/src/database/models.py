@@ -39,6 +39,7 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
+    side = Column(String)
     comments = relationship(
         'Comment',
         secondary=comments_of_inspection_table,
@@ -56,6 +57,7 @@ class Board(Base):
     id = Column(Integer, primary_key=True)
     multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
     datamatrix = Column(String)
+    side = Column(String)
     multiboard = relationship("Multiboard")
 
 

@@ -59,13 +59,13 @@ def insert_inspections(inspection):
         db.commit()
         for i in range(1, 9):
             new_board = Board(multiboard_id=new_multiboard.id,
-                              datamatrix=inspection.dm_values[i - 1])
+                              datamatrix=inspection.dm_values[i - 1], side=inspection.side)
             db.add(new_board)
             db.commit()
         db.flush()
         new_inspection = Inspection(time=inspection.datetime,
                                     multiboard_id=new_multiboard.id, url_image=inspection.img_path,
-                                    sector_id=inspection.sector_id, status='UNCHECKED')
+                                    sector_id=inspection.sector_id, status='UNCHECKED',side=inspection.side)
         db.add(new_inspection)
     else:
         update_id = [id_[0] for id_ in db.query(Board.id).
@@ -76,7 +76,7 @@ def insert_inspections(inspection):
         db.commit()
         new_inspection = Inspection(time=inspection.datetime,
                                     multiboard_id=new_multiboard_id, url_image=inspection.img_path,
-                                    sector_id=inspection.sector_id, status='UNCHECKED')
+                                    sector_id=inspection.sector_id, status='UNCHECKED', side=inspection.side)
         db.add(new_inspection)
     try:
         db.commit()
