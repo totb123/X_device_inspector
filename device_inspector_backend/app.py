@@ -135,7 +135,6 @@ async def get_image(path: str):
         with open (file_path, 'rb') as file:
             image = file.read()
         return Response(content=image, media_type='image/jpeg')
-
     else: 
         return {'error': 'File not found'}
 

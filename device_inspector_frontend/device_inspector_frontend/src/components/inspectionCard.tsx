@@ -1,5 +1,5 @@
 import Card from 'antd/es/card/Card'
-import React from 'react'
+import React, { useEffect } from 'react'
 import {Button, Divider, Image, Space, Tag, Typography} from 'antd'
 import { TInspection } from '../types/inspectionType'
 import { SectorBadge } from './sectorBagde'
@@ -15,6 +15,13 @@ type InspectionCardProps = {
 export const InspectionCard: React.FC<InspectionCardProps> = (
   {inspection, handleModal, highlightedDatamatrices}
 ) => {
+
+  useEffect(() => {
+    console.log(
+      'Alex path', 
+      `${process.env.REACT_APP_API_BASE_URL}/
+      get_image?path=${inspection.url_image}`)
+  }, [])
   return (
     <Card style={{width: 800, margin: 10 }} hoverable={true}>
       <Space direction={'horizontal'}>
