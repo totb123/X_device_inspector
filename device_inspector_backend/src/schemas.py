@@ -13,7 +13,7 @@ class Board(BaseModel):
     id: int
     #? используется?
     # code: Optional[str] | None
-    datamatrix: int
+    datamatrix: str
     multiboard_id: int
     model_config = ConfigDict(from_attributes=True)
 
