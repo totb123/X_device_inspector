@@ -1,11 +1,7 @@
 import pytz
 from typing import List
-import src.schemas as schemas 
-from src.mock import build_fake_multi_boards
+import src.schemas as schemas
 from src.schemas import InspectionsFilter
-
-
-multi_boards = build_fake_multi_boards()
 
 
 def _passed_filters(inspection: schemas.Inspection, idx: int, filters: InspectionsFilter) -> bool:
