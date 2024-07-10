@@ -21,22 +21,24 @@ class Sector(Base):
     #     return str(self.id) + ' ' + str(self.step_num) + ' ' + self.name
     # '''
 
-comments_of_inspection_table = Table(
-    'comments_of_inspection_table',
-    Base.metadata,
-    Column('comment_id', Integer, ForeignKey('comments.id')),
-    Column('inspection_id', Integer, ForeignKey('inspections.id')),
-)
+# comments_of_inspection_table = Table(
+#     'comments_of_inspection_table',
+#     Base.metadata,
+#     Column('comment_id', Integer, ForeignKey('comments.id')),
+#     Column('inspection_id', Integer, ForeignKey('inspections.id')),
+# )
 
 class Comment(Base):
     __tablename__ = 'comments'
     id = Column(Integer, primary_key=True)
+    inspections_id = Column(Integer, ForeignKey('inspections.id'))
     text = Column(String, nullable=False)
-    inspection = relationship(
-        'Inspection',
-        secondary=comments_of_inspection_table, 
-        back_populates='comments'
-    )
+
+    # inspection = relationship(
+    #     'Inspection',
+    #     # secondary=comments_of_inspection_table,
+    #     back_populates='comments'
+    # )
 
 class Inspection(Base):
     __tablename__ = 'inspections'
@@ -48,11 +50,11 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
-    comments = relationship(
-        'Comment',
-        secondary=comments_of_inspection_table, 
-        back_populates='inspection'
-    )
+    # comments = relationship(
+    #     'Comment',
+    #     # secondary=comments_of_inspection_table,
+    #     back_populates='inspection'
+    # )
 
 
 
