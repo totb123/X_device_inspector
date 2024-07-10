@@ -2,6 +2,7 @@ from src.database import db
 import os
 import aiofiles
 
+
 async def update_inspections(image, inspection_id: int):
     save_result = await __save_image(image)
     if type(save_result) == str:
