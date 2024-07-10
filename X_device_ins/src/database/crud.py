@@ -30,54 +30,19 @@ def get_dm_position(sector_id):
 def insert_inspections(inspection):
     db = get_connection()
     db.begin()
-    multiboard_set = {res[0] for res in db.query(Board.multiboard_id).filter(
-        Board.datamatrix.in_(list(map(str, inspection.dm_values)))).all()}
-    create_new_boards = True
-    if multiboard_set:
-        for multiboard_set_id in multiboard_set:
-            board_list = [elem for elem in
-                    db.query(Board.id, Board.datamatrix, Board.multiboard_id).filter(Board.multiboard_id ==
-                                                                                             multiboard_set_id).all()]
-            for board_list_dm in board_list:
-                if not create_new_boards:
-                    break
-                new_multiboard_id = board_list_dm[2]
-                for inspection_dm in inspection.dm_values:
-                    if board_list_dm[1] != '0' and board_list_dm[1] == inspection_dm:
-                        create_new_boards = False
-                        break
-                    else:
-                        create_new_boards = True
-            if not create_new_boards:
-                break
-        for index in range(len(board_list)):
-            if board_list[index][1] != '0' and inspection.dm_values[index] == '0':
-                inspection.dm_values[index] = board_list[index][1]
-    if create_new_boards:
-        new_multiboard = Multiboard()
-        db.add(new_multiboard)
+    new_multiboard = Multiboard()
+    db.add(new_multiboard)
+    db.commit()
+    for i in range(1, 9):
+        new_board = Board(multiboard_id=new_multiboard.id,
+                          datamatrix=inspection.dm_values[i - 1], side=inspection.side)
+        db.add(new_board)
         db.commit()
-        for i in range(1, 9):
-            new_board = Board(multiboard_id=new_multiboard.id,
-                              datamatrix=inspection.dm_values[i - 1], side=inspection.side)
-            db.add(new_board)
-            db.commit()
-        db.flush()
-        new_inspection = Inspection(time=inspection.datetime,
-                                    multiboard_id=new_multiboard.id, url_image=inspection.img_path,
-                                    sector_id=inspection.sector_id, status='UNCHECKED',side=inspection.side)
-        db.add(new_inspection)
-    else:
-        update_id = [id_[0] for id_ in db.query(Board.id).
-            filter(Board.multiboard_id == new_multiboard_id).order_by(Board.id).all()]
-        for index in range(len(update_id)):
-            db.query(Board).filter(Board.id == update_id[index]).update(
-                {Board.datamatrix: inspection.dm_values[index]})
-        db.commit()
-        new_inspection = Inspection(time=inspection.datetime,
-                                    multiboard_id=new_multiboard_id, url_image=inspection.img_path,
-                                    sector_id=inspection.sector_id, status='UNCHECKED', side=inspection.side)
-        db.add(new_inspection)
+    db.flush()
+    new_inspection = Inspection(time=inspection.datetime,
+                                multiboard_id=new_multiboard.id, url_image=inspection.img_path,
+                                sector_id=inspection.sector_id, status='UNCHECKED', side=inspection.side)
+    db.add(new_inspection)
     try:
         db.commit()
         return True

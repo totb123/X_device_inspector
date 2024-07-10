@@ -15,3 +15,4 @@ def get_inspection(sector_id, camera_list):
     side, dm_data = IDmDetector().dm_decode(image, sector_data.coordinates)
     inspection_data = Inspection(image, dm_data, side, dtime, sector_id)
     return InspectionRepository().image_repo_crud(inspection_data)
+
