@@ -135,7 +135,18 @@ async def get_image(path: str):
         with open (file_path, 'rb') as file:
             image = file.read()
         return Response(content=image, media_type='image/jpeg')
+    else: 
+        return {'error': 'File not found'}
+    
 
+@app.get('/get_last_image')
+async def get_last_image(sector_id: int, side):
+    inspection = db.get_last_inspection(sector_id, side)
+    file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
+    if os.path.exists(file_path):
+        with open (file_path, 'rb') as file:
+            image = file.read()
+        return Response(content=image, media_type='image/jpeg')
     else: 
         return {'error': 'File not found'}
 

@@ -8,6 +8,7 @@ import {TSettings} from '../types/settingsType'
 import { SectorInput } from '../../../components/sectorInput'
 import { SidePicker } from './sidePicker'
 import { useSettingsHandler } from '../hooks/useSettingsHandler'
+import { MapperImage } from './customMarker'
 
 
 export const MainPage: React.FC = () => {
@@ -27,8 +28,17 @@ export const MainPage: React.FC = () => {
     setUpdatedCoordinates
   ] = useState<string[]>(undefined!)
 
+  const [
+    markerInitCoordinates, 
+    setMarkerInitCoordinates
+  ] = useState<string | undefined>(undefined)
+
+  const [
+    currentBoardIndex, 
+    setCurrentBoardIndex
+  ] = useState<number | undefined>(undefined)
+
   const handleSector = (sectorsPicked: number) => {
-    console.log(sectorsPicked)
     setSector(sectorsPicked)
   }
 
@@ -37,13 +47,19 @@ export const MainPage: React.FC = () => {
   }
 
   const handleCoordinateChange = (index: number, value: string) => {
+    const clearString = value.replace(/\s+/g, '')
     const updatedCoordinatesWithNewValue = [...updatedCoordinates]
-    updatedCoordinatesWithNewValue[index] = value
+    updatedCoordinatesWithNewValue[index] = clearString
     setUpdatedCoordinates(updatedCoordinatesWithNewValue)
   }
 
   const handleFormSubmit = () => {
     updateCoordinates(updatedCoordinates)
+  }
+
+  const showMarker = (index: number, value: string) => {
+    setCurrentBoardIndex(index)
+    setMarkerInitCoordinates(value)
   }
 
   useEffect(() => {
@@ -58,7 +74,7 @@ export const MainPage: React.FC = () => {
       layout='vertical'
       style={{padding: '16px'}}
     >
-      <Form.Item label="Сектор">
+      <Form.Item label="Сектор" style={{width: '120px'}}>
         <SectorInput 
           defaultValue={{
             label: 'Гравер',
@@ -69,7 +85,7 @@ export const MainPage: React.FC = () => {
           onChange={handleSector} 
         />
       </Form.Item>
-      <Form.Item>
+      <Form.Item label={'Сторона'} style={{width: '120px'}}>
         <SidePicker onChange={handleSide}/>
       </Form.Item>
       <Space.Compact direction='vertical'>
@@ -85,6 +101,10 @@ export const MainPage: React.FC = () => {
                     <Input
                       value={updatedCoordinates[index]}
                       onChange={value => handleCoordinateChange(index, value.target.value)}/>
+                    <Button onClick={() => 
+                      showMarker(index, updatedCoordinates[index])}>
+                        Посмотреть
+                    </Button>
                   </Col>
                 </Form.Item>)
               }
@@ -99,6 +119,10 @@ export const MainPage: React.FC = () => {
                     <Input 
                       value={updatedCoordinates[index + 4]}
                       onChange={value => handleCoordinateChange(index + 4, value.target.value)}/>
+                    <Button onClick={() => 
+                      showMarker(index + 4, updatedCoordinates[index + 4])}>
+                        Посмотреть
+                    </Button>
                   </Col>
                 </Form.Item>)
               }
@@ -118,6 +142,13 @@ export const MainPage: React.FC = () => {
           }
         </Button>
       </Form.Item>
-    </Form>    
+    </Form>
+    <div style={{padding: '10px'}}>  
+      <MapperImage
+        path={`${process.env.REACT_APP_API_BASE_URL}/get_last_image?sector_id=${sector}&side=${side}`} 
+        initCoordinates={markerInitCoordinates}
+        handleCoordinateChange={handleCoordinateChange}
+        boardIndex={currentBoardIndex} />
+    </div>  
   </div>)
 }

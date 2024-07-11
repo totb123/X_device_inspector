@@ -64,6 +64,15 @@ def add_inspection_image(inspection_id: int, image_path: str):
         return True
     except: 
         return False
+    
+
+def get_last_inspection(sector_id: int, side: str) -> models.Inspection: 
+    db = get_connection()
+    return db.query(models.Inspection).filter(
+        models.Inspection.side == side.lower(), 
+        models.Inspection.sector_id == sector_id
+    ).first()
+
 
 def get_status_by_dm(inspection_id):
     db = get_connection()
