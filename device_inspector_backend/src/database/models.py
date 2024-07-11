@@ -11,32 +11,12 @@ class Sector(Base):
     step_num = Column(Integer)
     name = Column(String)
 
-    # '''def __init__(self, id, step, name):
-    #     self.id = id
-    #     self.step_num = step
-    #     self.name = name
-    #
-    #
-    # def __repr__(self):
-    #     return str(self.id) + ' ' + str(self.step_num) + ' ' + self.name
-    # '''
-
-comments_of_inspection_table = Table(
-    'comments_of_inspection_table',
-    Base.metadata,
-    Column('comment_id', Integer, ForeignKey('comments.id')),
-    Column('inspection_id', Integer, ForeignKey('inspections.id')),
-)
-
 class Comment(Base):
     __tablename__ = 'comments'
     id = Column(Integer, primary_key=True)
+    inspections_id = Column(Integer, ForeignKey('inspections.id'))
     text = Column(String, nullable=False)
-    inspection = relationship(
-        'Inspection',
-        secondary=comments_of_inspection_table, 
-        back_populates='comments'
-    )
+
 
 class Inspection(Base):
     __tablename__ = 'inspections'
@@ -48,13 +28,6 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
-    side = Column(String)
-    comments = relationship(
-        'Comment',
-        secondary=comments_of_inspection_table, 
-        back_populates='inspection'
-    )
-
 
 
 class Multiboard(Base):

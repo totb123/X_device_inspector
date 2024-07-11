@@ -106,19 +106,15 @@ def get_comments_by_datamatrix(board_datamatrix: int):
 
 def get_comments_by_inspection(inspection_id: int):
     db = get_connection()
-    inspection = db.query(models.Inspection).filter_by(id = inspection_id).first()
-    return [schemas.Comment(text=element.text, id=element.id) for element in inspection.comments]
+    inspection = db.query(models.Comment).filter_by(inspections_id = inspection_id).all()
+    return [schemas.Comment(text=element.text, id=element.id) for element in inspection]
 
 def add_comment(inspection_id: int, comment: schemas.CommentCreate):
     db = get_connection()
-    inspection = db.query(models.Inspection).filter_by(id = inspection_id).first()
-
-    last_id = db.query(func.max(models.Comment.id)).scalar()
-    inspection.comments.append(models.Comment(id = last_id+1, text=comment.text))
-
+    new_comment = models.Comment(inspections_id=inspection_id, text=comment.text)
+    db.add(new_comment)
     db.commit()
-    db.refresh(inspection)
-    return schemas.Inspection(**(inspection.__dict__))
+    return True
 
 def get_sector_db() -> list[schemas.Sector]:
     db = get_connection()
