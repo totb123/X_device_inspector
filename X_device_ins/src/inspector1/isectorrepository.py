@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from src.inspector1.dataclasses import Sector, SectorCoords, Camera
 from src.inspector1.config import sectors_camera
 from src.database.crud import get_dm_position
