@@ -70,7 +70,7 @@ def get_last_inspection(sector_id: int, side: str) -> models.Inspection:
     return db.query(models.Inspection).filter(
         models.Inspection.side == side.lower(), 
         models.Inspection.sector_id == sector_id
-    ).first()
+    ).all()[-1]
 
 
 def get_status_by_dm(inspection_id):
@@ -154,10 +154,12 @@ def edit_dms(dto: schemas.EditDMsInput):
             multiboard_id=dto.multiboard_id, side=dto.side
             ).order_by(models.Board.id).all()
         board_ids = [element.id for element in query]
-        for index in dto.indices:
-            query = db.query(models.Board).filter(models.Board.id == board_ids[index])
+        for number_to_edit in range(len(dto.indices)):
+            query = db.query(models.Board).filter(
+                models.Board.id == board_ids[dto.indices[number_to_edit]]
+                )
             query.update({
-                models.Board.datamatrix: dto.dms[index],
+                models.Board.datamatrix: dto.dms[number_to_edit],
             }, synchronize_session=False)
         db.commit()
         db.close()
