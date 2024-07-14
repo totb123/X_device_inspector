@@ -1,5 +1,6 @@
 export type TBoard = {
   id: number
-  datamatrix: number
+  datamatrix: string
   multiboard_id: number
+  side: string
 }

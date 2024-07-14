@@ -25,6 +25,7 @@ class Inspection(Base):
     multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
     multiboard = relationship("Multiboard")
     url_image = Column(String)
+    side = Column(String)
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
@@ -40,6 +41,7 @@ class Board(Base):
     id = Column(Integer, primary_key=True)
     multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
     datamatrix = Column(String)
+    side = Column(String)
     multiboard = relationship("Multiboard")
 
 

@@ -37,7 +37,6 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
   }
 
   const changeInputFormValues = (coordinatesPoints: Point[]) => {
-    // console.log('Alex coor',coordinatesPoints)
     const minPoints = [...coordinatesPoints].reduce(
       (acc: Point, cur: Point) => {
         return {
@@ -63,10 +62,6 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
     }
   }, [props.initCoordinates])
 
-  useEffect(() => {
-    console.log('Alex points', points)
-  }, [points])
-
   return (
     <div>
       <h3>Изображение</h3>
@@ -76,7 +71,6 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
         imageStyle={{ width: '1000px', height: '500px'}}
         onChange={(path: Point[]) => {
           if (path.length == 4) {
-            console.log('Alex path ch', path)
             changeInputFormValues(path)
           }
         }}
