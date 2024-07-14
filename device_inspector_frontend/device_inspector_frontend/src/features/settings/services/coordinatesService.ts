@@ -1,4 +1,3 @@
-import { TreeSelectProps } from 'antd'
 import { TSettings } from '../types/settingsType'
 
 const generateParams = (settings: TSettings) => {

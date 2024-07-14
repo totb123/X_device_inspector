@@ -1,6 +1,6 @@
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import desc
+from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from src.database import models
 from src import schemas
@@ -50,7 +50,6 @@ def get_inspections_by_criteria(
     inspections = query.all()
     for element in inspections:
         res.append(schemas.Inspection(**element.__dict__))
-
     db.close()
     return sorted(res,key=lambda x: x.time, reverse=True)
 
@@ -129,7 +128,7 @@ def get_dm_coordinates(sector_id, side) -> models.SectorsDMPosition:
         models.SectorsDMPosition.id_sector == sector_id
     ).first()
     
-# настройка позиций датаматриксов для каждого сектора
+
 def change_dm_coordinates(sector_id, side, coordinates_1, coordinates_2, coordinates_3, coordinates_4, coordinates_5,
                        coordinates_6, coordinates_7, coordinates_8):
     db = get_connection()
@@ -147,7 +146,25 @@ def change_dm_coordinates(sector_id, side, coordinates_1, coordinates_2, coordin
     db.commit()
     db.close()
     return count
-    # добавить ретерн
+
+def edit_dms(dto: schemas.EditDMsInput):
+    try:
+        db = get_connection()
+        query = db.query(models.Board).filter_by(
+            multiboard_id=dto.multiboard_id, side=dto.side
+            ).order_by(models.Board.id).all()
+        board_ids = [element.id for element in query]
+        for index in dto.indices:
+            query = db.query(models.Board).filter(models.Board.id == board_ids[index])
+            query.update({
+                models.Board.datamatrix: dto.dms[index],
+            }, synchronize_session=False)
+        db.commit()
+        db.close()
+        return True
+    except (SQLAlchemyError, Exception):
+        return False
+
 
 
 def get_connection():

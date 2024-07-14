@@ -1,6 +1,7 @@
-import { Button, Card, Col, Input, Row, Spin } from 'antd'
+import { Button, Card, Col, Form, FormProps, Input, Row, Spin } from 'antd'
 import React from 'react'
-import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardGet'
+// eslint-disable-next-line @stylistic/max-len
+import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardHandler'
 
 type DataMatrixProps = {
   multiboardId: number
@@ -8,61 +9,112 @@ type DataMatrixProps = {
   highlightedDatamatrix?: string[]
 }
 
+type TFormValues = {
+  [key: string]: string
+}
+
 export const DataMatrix: React.FC<DataMatrixProps> = (
   {multiboardId, inner, highlightedDatamatrix}
 ) => {
   const {
     boards,
-    boardsStatus
+    boardsStatus,
+    boardsEditDMs,
   } = useBoardsGet(multiboardId)
+
   if (boardsStatus !== 'success') return <Spin/>
   const datamatrixes = boards!.map(board => board.datamatrix)
+  const side = boards!.find(board => board.side)!.side
+
+  const onFinish: FormProps['onFinish'] = (formValues: TFormValues) => {
+    if (formValues && boards) {
+      const indices = Object.keys(formValues)
+        .filter((key: string) => formValues[key])
+        .map((index: string) => Number(index))
+      const values = Object.values(formValues)
+        .filter((value: string) => value)
+      boardsEditDMs({
+        multiboard_id: multiboardId,
+        side: side,
+        indices: indices,
+        dms: values
+      })
+    }
+  }
+
+
   return(
     <>
-      <Card 
-        type={inner ? 'inner' : undefined}
-        title='Datamatrix-коды плат'>
-        Datamatrix
-        <Row gutter={[8, 8]}>
-          {
-            datamatrixes.map((element, index) => 
-              index < datamatrixes.length / 2
-                ? <Col className='gutter-row' style={
-                  highlightedDatamatrix?.filter(
-                    val => val == element.toString()
-                  ).length
-                    ? {
-                      color: 'red'
+      <Form
+        onFinish={onFinish}
+        autoComplete="off"
+      >
+        <Card 
+          type={inner ? 'inner' : undefined}
+          title='Datamatrix-коды плат'>
+          Datamatrix
+          <Row gutter={[8, 8]}>
+            {
+              datamatrixes.map((element, index) => 
+                index < datamatrixes.length / 2
+                  ? <Col className='gutter-row' style={
+                    highlightedDatamatrix?.filter(
+                      val => val == element.toString()
+                    ).length
+                      ? {
+                        color: 'red'
+                      }
+                      : {}
+                  }>
+                    {inner 
+                      ? <Form.Item
+                        label={index + 1}
+                        name={index}
+                      >
+                        <Input defaultValue={element}/>
+                      </Form.Item>
+                      : <>{index + 1}.{element}</>
                     }
-                    : {}
-                }>{index + 1}. <Input defaultValue={element}></Input></Col>
-                : <></>
-            )
-          }
-        </Row>
-        <Row gutter={[8,8]}>
-          {
-            datamatrixes.map((element, index) => 
-              index >= datamatrixes.length / 2
-                ? <Col className='gutter-row'style={
-                  highlightedDatamatrix?.filter(
-                    val => val == element.toString()
-                  ).length
-                    ? {
-                      color: 'red'
+                  </Col>
+                  : <></>
+              )
+            }
+          </Row>
+          <Row gutter={[8,8]}>
+            {
+              datamatrixes.map((element, index) => 
+                index >= datamatrixes.length / 2
+                  ? <Col className='gutter-row'style={
+                    highlightedDatamatrix?.filter(
+                      val => val == element.toString()
+                    ).length
+                      ? {
+                        color: 'red'
+                      }
+                      : {}
+                  }>
+                    {inner 
+                      ? <Form.Item
+                        label={index + 1}
+                        name={index}
+                      >
+                        <Input defaultValue={element}/>
+                      </Form.Item>
+                      : <>{index + 1}.{element}</>
                     }
-                    : {}
-                }>{index + 1}. <Input defaultValue={element}></Input></Col>
-                : <></>
-            )
-          }
-        </Row>
-      </Card>
-      {inner 
-        ? <Button>Edit</Button>
-        : <></>
-      }
-      
+                  </Col>
+                  : <></>
+              )
+            }
+          </Row>
+        </Card>
+        {inner 
+          ? <Button type="primary" htmlType="submit">
+              Submit
+          </Button>
+          : <></>
+        }
+      </Form>
     </>
   )
 }

@@ -1,6 +1,4 @@
 
-import Paragraph from 'antd/lib/typography/Paragraph'
-
 import {Spin, Typography} from 'antd'
 import React from 'react'
 import {TSector} from '../types/sectorType'
