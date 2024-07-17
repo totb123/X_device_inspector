@@ -28,6 +28,7 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
+    side = Column(String)
 
 
 class Multiboard(Base):
