@@ -28,5 +28,6 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    pass
+    op.execute("DELETE FROM sectors WHERE id IN (1,2,3);")
+    op.execute("DELETE FROM sectors_dm_position WHERE id IN (1,2,3,4,5,6)")
     # ### end Alembic commands ###
