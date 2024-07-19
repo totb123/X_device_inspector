@@ -148,24 +148,17 @@ def change_dm_coordinates(sector_id, side, coordinates_1, coordinates_2, coordin
     return count
 
 def edit_dms(dto: schemas.EditDMsInput):
-    try:
-        db = get_connection()
-        query = db.query(models.Board).filter_by(
-            multiboard_id=dto.multiboard_id, side=dto.side
-            ).order_by(models.Board.id).all()
-        board_ids = [element.id for element in query]
-        for number_to_edit in range(len(dto.indices)):
-            query = db.query(models.Board).filter(
-                models.Board.id == board_ids[dto.indices[number_to_edit]]
-                )
-            query.update({
-                models.Board.datamatrix: dto.dms[number_to_edit],
-            }, synchronize_session=False)
-        db.commit()
-        db.close()
-        return True
-    except (SQLAlchemyError, Exception):
-        return False
+    db = get_connection()
+    for index, board_id in enumerate(dto.board_ids):
+        query = db.query(models.Board).filter(
+            models.Board.id == board_id
+            )
+        query.update({
+            models.Board.datamatrix: dto.dms[index],
+        }, synchronize_session=False)
+    db.commit()
+    db.close()
+    return True
 
 
 

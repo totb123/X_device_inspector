@@ -1,6 +1,4 @@
 export type TEditDMs = {
-    multiboard_id: number 
-    side: string
-    indices: number[]
+    board_ids: number[]
     dms: string[]
   }

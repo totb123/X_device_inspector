@@ -13,7 +13,7 @@ import { SectorBadge } from './sectorBagde'
 // eslint-disable-next-line @stylistic/max-len
 import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardHandler'
 import { CommentsDisplayedForm } from './commentsDisplayedForm'
-import { DataMatrix } from './datamatrixGrid'
+import { DataMatrixGridModal } from './datamatrixGridModal'
 import { StatusBagde } from './statusBagde'
 
 type InspectionModalData = {
@@ -120,8 +120,7 @@ const DataDisplay: React.FC<DataDisplayProps> = (
             inspectionId={inspection.id}
             changeStatus={changeStatus}
           />
-          <DataMatrix 
-            inner
+          <DataMatrixGridModal
             highlightedDatamatrix={highlightedDatamatrices}
             multiboardId={inspection.multiboard_id}
           />

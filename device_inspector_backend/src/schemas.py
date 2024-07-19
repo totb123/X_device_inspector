@@ -71,7 +71,5 @@ class MultiBoardsFilter(BaseModel):
 
 
 class EditDMsInput(BaseModel):
-    multiboard_id: int 
-    side: str
-    indices: list[int]
+    board_ids: list[int]
     dms: list[str]
