@@ -1,11 +1,11 @@
 import { Button, Card, Col, Form, FormProps, Input, Row, Spin } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
 // eslint-disable-next-line @stylistic/max-len
 import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardHandler'
+import { TBoard } from '../types/boardType'
 
 type DataMatrixProps = {
   multiboardId: number
-  inner: boolean
   highlightedDatamatrix?: string[]
 }
 
@@ -13,8 +13,8 @@ type TFormValues = {
   [key: string]: string
 }
 
-export const DataMatrix: React.FC<DataMatrixProps> = (
-  {multiboardId, inner, highlightedDatamatrix}
+export const DataMatrixGridModal: React.FC<DataMatrixProps> = (
+  {multiboardId, highlightedDatamatrix}
 ) => {
   const {
     boards,
@@ -28,18 +28,26 @@ export const DataMatrix: React.FC<DataMatrixProps> = (
 
   const onFinish: FormProps['onFinish'] = (formValues: TFormValues) => {
     if (formValues && boards) {
-      const indices = Object.keys(formValues)
+      const boardIds = Object.keys(formValues)
         .filter((key: string) => formValues[key])
         .map((index: string) => Number(index))
-      const values = Object.values(formValues)
+      const dms = Object.values(formValues)
         .filter((value: string) => value)
       boardsEditDMs({
-        multiboard_id: multiboardId,
-        side: side,
-        indices: indices,
-        dms: values
+        board_ids: boardIds,
+        dms: dms
       })
     }
+  }
+
+  const inputRender = (index: number, board: TBoard) => {
+    return (
+      <Form.Item
+        label={index + 1}
+        name={board.id}
+      >
+        <Input defaultValue={board.datamatrix}/>
+      </Form.Item>)
   }
 
 
@@ -50,31 +58,23 @@ export const DataMatrix: React.FC<DataMatrixProps> = (
         autoComplete="off"
       >
         <Card 
-          type={inner ? 'inner' : undefined}
+          type={'inner'}
           title='Datamatrix-коды плат'>
           Datamatrix
           <Row gutter={[8, 8]}>
             {
-              datamatrixes.map((element, index) => 
+              boards!.map((board: TBoard, index: number) => 
                 index < datamatrixes.length / 2
                   ? <Col className='gutter-row' style={
                     highlightedDatamatrix?.filter(
-                      val => val == element.toString()
+                      val => val == board.datamatrix.toString()
                     ).length
                       ? {
                         color: 'red'
                       }
                       : {}
                   }>
-                    {inner 
-                      ? <Form.Item
-                        label={index + 1}
-                        name={index}
-                      >
-                        <Input defaultValue={element}/>
-                      </Form.Item>
-                      : <>{index + 1}.{element}</>
-                    }
+                    {inputRender(index, board)}
                   </Col>
                   : <></>
               )
@@ -82,38 +82,26 @@ export const DataMatrix: React.FC<DataMatrixProps> = (
           </Row>
           <Row gutter={[8,8]}>
             {
-              datamatrixes.map((element, index) => 
+              boards!.map((board: TBoard, index: number) =>
                 index >= datamatrixes.length / 2
                   ? <Col className='gutter-row'style={
                     highlightedDatamatrix?.filter(
-                      val => val == element.toString()
+                      val => val == board.datamatrix.toString()
                     ).length
                       ? {
                         color: 'red'
                       }
                       : {}
                   }>
-                    {inner 
-                      ? <Form.Item
-                        label={index + 1}
-                        name={index}
-                      >
-                        <Input defaultValue={element}/>
-                      </Form.Item>
-                      : <>{index + 1}.{element}</>
-                    }
+                    {inputRender(index, board)}
                   </Col>
                   : <></>
               )
             }
           </Row>
-        </Card>
-        {inner 
-          ? <Button type="primary" htmlType="submit">
-              Submit
-          </Button>
-          : <></>
-        }
+        </Card><Button type="primary" htmlType="submit">
+              Изменить значения
+        </Button>
       </Form>
     </>
   )
