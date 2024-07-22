@@ -32,7 +32,7 @@ export const DataMatrixGridCard: React.FC<DataMatrixProps> = (
         Datamatrix
         <Row gutter={[8, 8]}>
           {
-            datamatrixes.map((element, index) => 
+            datamatrixes.map((element: string, index: number) => 
               index < datamatrixes.length / 2
                 ? <Col className='gutter-row' style={
                   highlightedDatamatrix?.filter(
@@ -50,9 +50,9 @@ export const DataMatrixGridCard: React.FC<DataMatrixProps> = (
         </Row>
         <Row gutter={[8,8]}>
           {
-            datamatrixes.map((element, index) => 
+            datamatrixes.map((element: string, index: number) => 
               index >= datamatrixes.length / 2
-                ? <Col className='gutter-row'style={
+                ? <Col className='gutter-row' style={
                   highlightedDatamatrix?.filter(
                     val => val == element.toString()
                   ).length
