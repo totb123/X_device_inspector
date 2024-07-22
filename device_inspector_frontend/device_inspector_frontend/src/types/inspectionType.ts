@@ -11,4 +11,5 @@ export type TInspection = {
   url_image: string
   status: InspectionStatus
   time: Date
+  side: string
 }

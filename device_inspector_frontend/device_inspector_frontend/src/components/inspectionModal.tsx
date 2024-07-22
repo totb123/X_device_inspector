@@ -5,7 +5,8 @@ import {
   Row, 
   Space, 
   Image, 
-  Card} from 'antd'
+  Card,
+  Tag} from 'antd'
 import React, {useEffect } from 'react'
 import { TInspection } from '../types/inspectionType'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -44,7 +45,9 @@ React.FC<InspectionModalData> = ({
     return () => {
     }
   }, [boards, boardsStatus])
+
   useEffect(() => {}, [highlightedDatamatrices])
+
   return (<Modal
     width={'60%'}
     closable={false}
@@ -110,6 +113,13 @@ const DataDisplay: React.FC<DataDisplayProps> = (
                 Date.parse(inspection.time.toString())
               ).toLocaleString()
             }
+          </Card>
+          <Card 
+            type='inner' 
+            style={{margin: '16px'}} 
+            size='small' 
+            title="Сторона">
+            <Tag>{inspection.side}</Tag>
           </Card>
         </Col>
       </Row>
