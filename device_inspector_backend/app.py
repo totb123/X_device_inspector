@@ -12,9 +12,32 @@ from src.services.get_all_sectors import get_all_sectors
 from src.services.get_inspections import get_inspections
 from src.services.get_coordinates import get_coordinates
 from src.services.update_inspections import update_inspections
+from src.services.get_image import get_image_from_zip_service
 import os
 
-app = FastAPI()
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+
+from redis import asyncio as aioredis
+
+from datetime import datetime, timedelta, time
+import os
+from src.database.db import get_inspections_by_criteria
+from src.database.iminio import MinIORepository
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 origins = [
     'http://localhost:9090',
@@ -128,8 +151,6 @@ async def upload_file(inspection_id: int, file: UploadFile = File(...)):
 
 @app.get('/get_image')
 async def get_image(path: str):
-    # file_path = f"D:/PycharmProjects/device_inspector-master/device_inspector_backend/static/{path}"
-    # print(file_path)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{path}"
     if os.path.exists(file_path):
         with open (file_path, 'rb') as file:
@@ -137,6 +158,12 @@ async def get_image(path: str):
         return Response(content=image, media_type='image/jpeg')
     else: 
         return {'error': 'File not found'}
+    
+
+@app.get('/get_minio_image')
+async def get_minio_image(path: str):
+    image = get_image_from_zip_service(path)
+    return Response(content=image, media_type='image/jpeg')
     
 
 @app.get('/get_last_image')
@@ -153,6 +180,18 @@ async def get_last_image(sector_id: int, side):
 @app.post('/edit_dms')
 async def edit_dms(dto: schemas.EditDMsInput):
     return db.edit_dms(dto)
+
+
+@app.post('/test_archive')
+async def test_archive(num: int):
+    archive_day = datetime.now() - timedelta(days=1)
+    start_of_day = datetime.combine(archive_day, time.min)
+    end_of_day = datetime.combine(archive_day, time.max)
+    inspections = get_inspections_by_criteria(start_time=start_of_day, end_time=end_of_day)
+    dir_name = f"{os.environ.get('FILE_PATH', './static')}"
+    zip_name = f"{archive_day.strftime('%Y_%m_%d')}.zip"
+    minio = MinIORepository()
+    minio.archive_files(inspections, dir_name, zip_name)
 
 
 if __name__ == '__main__':
