@@ -3,7 +3,7 @@ from minio import Minio
 from minio.error import S3Error
 import cv2
 from datetime import datetime, time
-from src.schemas import Inspection
+# from src.schemas import Inspection
 import zipfile
 
 class TInspectionXDI:
@@ -14,9 +14,9 @@ class TInspectionXDI:
         self.datetime = datetime
         self.sector_id = sector_id
 
-# class Inspection:
-#     def __init__(self, url_image):
-#         self.url_image = url_image
+class Inspection:
+    def __init__(self, url_image):
+        self.url_image = url_image
 
 
 class MinIORepository:
@@ -49,6 +49,30 @@ class MinIORepository:
             return False
         
 
+    def create_txt_file_and_save_image(self, inspection: TInspectionXDI):
+        try:
+            dir_name = os.path.dirname(os.path.realpath(__file__)) + '/image'
+            time = inspection.datetime.strftime('%Y_%m_%d_%H_%M_%S')
+            file_name = str(time) + '_' + str(inspection.sector_id)
+            image_name = file_name + ".jpg"
+            image_path = dir_name + '/' + image_name
+            cv2.imwrite(image_path, inspection.image)
+            with open (image_path, 'rb') as file:
+                image_txt = file.read()
+            txt_name = file_name + ".txt"
+            txt_path = dir_name + '/' + txt_name
+            with open(txt_path, 'wb') as f:
+                f.write(image_txt)
+            destination_file = txt_name
+            self.client.fput_object(
+                self.bucket_name, destination_file, txt_path,
+            )
+            # os.remove(image_path)
+            return True
+        except S3Error as exc:
+            return False
+        
+
     def archive_files(self, inspections: list[Inspection], dir_name: str, zip_name: str):
         try:
             zip_path = f"{dir_name}/{zip_name}"
@@ -69,6 +93,7 @@ class MinIORepository:
             os.remove(zip_path)
             return True
         except S3Error as exc:
+            print(f"MinIO error: {exc}")
             return False
         
 
@@ -85,24 +110,24 @@ class MinIORepository:
             return False
 
 
-# img = cv2.imread('2024_07_15_15_04_56_1.jpg', 0)
-# rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-# inspectionXDI = TInspectionXDI(
-#     image=rgb_img,
-#     dm_values=[],
-#     side='',
-#     datetime=datetime(
-#         year=2024,
-#         month=7,
-#         day=31,
-#         hour=15,
-#         minute=1,
-#         second=5,
-#     ),
-#     sector_id=1
-# )
-# img_rep = MinIORepository()
-# img_rep.save_image(inspection=inspectionXDI)
+img = cv2.imread('2024_07_15_15_16_30_1.jpg', 0)
+rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+inspectionXDI = TInspectionXDI(
+    image=rgb_img,
+    dm_values=[],
+    side='',
+    datetime=datetime(
+        year=2024,
+        month=7,
+        day=31,
+        hour=15,
+        minute=1,
+        second=5,
+    ),
+    sector_id=1
+)
+img_rep = MinIORepository()
+img_rep.create_txt_file_and_save_image(inspection=inspectionXDI)
 
 # start_of_day = datetime.combine(
 #         datetime(
@@ -116,8 +141,8 @@ class MinIORepository:
 #     time.min)
 # end_of_day = datetime.combine(datetime.now(), time.max)
 
-# inspections = [
-#     Inspection('2024_07_15_14_59_05_1.jpg'),
-#     Inspection('2024_07_15_15_00_05_1.jpg'),
-# ]
-# print(img_rep.archive_files(inspections, start_of_day))
+inspections = [
+    Inspection('2024_07_31_15_01_05_1.txt'),
+    # Inspection('2024_07_15_15_00_05_1.jpg'),
+]
+print(img_rep.archive_files(inspections, 'image', 'txt_zip.zip'))

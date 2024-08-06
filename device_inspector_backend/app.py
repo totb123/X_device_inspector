@@ -191,7 +191,7 @@ async def test_archive(num: int):
     dir_name = f"{os.environ.get('FILE_PATH', './static')}"
     zip_name = f"{archive_day.strftime('%Y_%m_%d')}.zip"
     minio = MinIORepository()
-    print(minio.archive_files(inspections, dir_name, zip_name))
+    minio.archive_files(inspections, dir_name, zip_name)
 
 
 if __name__ == '__main__':
