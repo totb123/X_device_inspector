@@ -22,7 +22,7 @@ class Inspection(Base):
     __tablename__ = 'inspections'
     id = Column(Integer, primary_key=True)
     time = Column(DateTime)
-    multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
+    multiboard_id = Column(Integer, ForeignKey('multiboards.id'))
     multiboard = relationship("Multiboard")
     url_image = Column(String)
     side = Column(String)
@@ -34,13 +34,14 @@ class Inspection(Base):
 
 class Multiboard(Base):
     __tablename__ = 'multiboards'
-    multiboard_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    specification_id = Column(Integer, ForeignKey('specifications.id'))
 
 
 class Board(Base):
     __tablename__ = 'boards'
     id = Column(Integer, primary_key=True)
-    multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
+    multiboard_id = Column(Integer, ForeignKey('multiboards.id'))
     datamatrix = Column(String)
     side = Column(String)
     multiboard = relationship("Multiboard")
@@ -51,6 +52,7 @@ class SectorsDMPosition(Base):
 
     id = Column(Integer, primary_key=True)
     id_sector = Column(Integer, ForeignKey('sectors.id'))
+    specification_id = Column(Integer, ForeignKey('specifications.id'))
     side = Column(String)
     coordinates_1 = Column(String)
     coordinates_2 = Column(String)
@@ -61,3 +63,8 @@ class SectorsDMPosition(Base):
     coordinates_7 = Column(String)
     coordinates_8 = Column(String)
 
+
+class Specification(Base):
+    __tablename__ = 'specifications'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)

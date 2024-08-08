@@ -65,12 +65,20 @@ def add_inspection_image(inspection_id: int, image_path: str):
         return False
     
 
-def get_last_inspection(sector_id: int, side: str) -> models.Inspection: 
+def get_last_inspection(sector_id: int, side: str, multiboard_ids: list[int]) -> models.Inspection: 
     db = get_connection()
     return db.query(models.Inspection).filter(
         models.Inspection.side == side.lower(), 
-        models.Inspection.sector_id == sector_id
+        models.Inspection.sector_id == sector_id,
+        models.Inspection.multiboard_id.in_(multiboard_ids),
     ).all()[-1]
+
+def get_multiboard_ids_by_specification(specification_id: int) -> list[int]: 
+    db = get_connection()
+    multiboards = db.query(models.Multiboard).filter(
+        models.Multiboard.specification_id == specification_id,
+    ).all()
+    return list(map(lambda multiboard: multiboard.id, multiboards))
 
 
 def get_status_by_dm(inspection_id):
@@ -121,18 +129,31 @@ def get_sector_db() -> list[schemas.Sector]:
     sectors = [schemas.Sector(**(element.__dict__)) for element in db_sectors]
     return sectors
 
-def get_dm_coordinates(sector_id, side) -> models.SectorsDMPosition: 
+
+def get_specifications_db() -> list[schemas.Sector]:
+    db = get_connection()
+    db_specifications = db.query(models.Specification).all()
+    specifications = [schemas.Specification(**(element.__dict__)) for element in db_specifications]
+    return specifications
+
+
+def get_dm_coordinates(sector_id, side, specification_id) -> models.SectorsDMPosition: 
     db = get_connection()
     return db.query(models.SectorsDMPosition).filter(
         models.SectorsDMPosition.side == side.lower(), 
-        models.SectorsDMPosition.id_sector == sector_id
+        models.SectorsDMPosition.id_sector == sector_id,
+        models.SectorsDMPosition.specification_id == specification_id,
     ).first()
     
 
-def change_dm_coordinates(sector_id, side, coordinates_1, coordinates_2, coordinates_3, coordinates_4, coordinates_5,
+def change_dm_coordinates(sector_id, specification_id, side, coordinates_1, coordinates_2, coordinates_3, coordinates_4, coordinates_5,
                        coordinates_6, coordinates_7, coordinates_8):
     db = get_connection()
-    query = db.query(models.SectorsDMPosition).filter(models.SectorsDMPosition.side == side.lower(), models.SectorsDMPosition.id_sector == sector_id)
+    query = db.query(models.SectorsDMPosition).filter(
+        models.SectorsDMPosition.side == side.lower(), 
+        models.SectorsDMPosition.id_sector == sector_id,
+        models.SectorsDMPosition.specification_id == specification_id,
+        )
     count = query.update({
         models.SectorsDMPosition.coordinates_1: coordinates_1,
         models.SectorsDMPosition.coordinates_2: coordinates_2,
@@ -155,6 +176,19 @@ def edit_dms(dto: schemas.EditDMsInput):
             )
         query.update({
             models.Board.datamatrix: dto.dms[index],
+        }, synchronize_session=False)
+    db.commit()
+    db.close()
+    return True
+
+
+def set_time_in_inspection(ins_id):
+    db = get_connection()
+    query = db.query(models.Inspection).filter(
+            models.Inspection.id == ins_id
+            )
+    query.update({
+            models.Inspection.time: datetime.now(),
         }, synchronize_session=False)
     db.commit()
     db.close()

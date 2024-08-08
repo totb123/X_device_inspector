@@ -110,24 +110,24 @@ class MinIORepository:
             return False
 
 
-img = cv2.imread('2024_07_15_15_16_30_1.jpg', 0)
-rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-inspectionXDI = TInspectionXDI(
-    image=rgb_img,
-    dm_values=[],
-    side='',
-    datetime=datetime(
-        year=2024,
-        month=7,
-        day=31,
-        hour=15,
-        minute=1,
-        second=5,
-    ),
-    sector_id=1
-)
-img_rep = MinIORepository()
-img_rep.create_txt_file_and_save_image(inspection=inspectionXDI)
+# img = cv2.imread('2024_07_15_15_16_30_1.jpg', 0)
+# rgb_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# inspectionXDI = TInspectionXDI(
+#     image=rgb_img,
+#     dm_values=[],
+#     side='',
+#     datetime=datetime(
+#         year=2024,
+#         month=7,
+#         day=31,
+#         hour=15,
+#         minute=1,
+#         second=5,
+#     ),
+#     sector_id=1
+# )
+# img_rep = MinIORepository()
+# img_rep.create_txt_file_and_save_image(inspection=inspectionXDI)
 
 # start_of_day = datetime.combine(
 #         datetime(
@@ -141,8 +141,8 @@ img_rep.create_txt_file_and_save_image(inspection=inspectionXDI)
 #     time.min)
 # end_of_day = datetime.combine(datetime.now(), time.max)
 
-inspections = [
-    Inspection('2024_07_31_15_01_05_1.txt'),
-    # Inspection('2024_07_15_15_00_05_1.jpg'),
-]
-print(img_rep.archive_files(inspections, 'image', 'txt_zip.zip'))
+# inspections = [
+#     Inspection('2024_07_31_15_01_05_1.txt'),
+#     # Inspection('2024_07_15_15_00_05_1.jpg'),
+# ]
+# print(img_rep.archive_files(inspections, 'image', 'txt_zip.zip'))

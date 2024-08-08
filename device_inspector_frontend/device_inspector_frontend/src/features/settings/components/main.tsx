@@ -9,19 +9,21 @@ import { SectorInput } from '../../../components/sectorInput'
 import { SidePicker } from './sidePicker'
 import { useSettingsHandler } from '../hooks/useSettingsHandler'
 import { MapperImage } from './customMarker'
+import { SpecificationInput } from '../../../components/specificationInput'
 
 
 export const MainPage: React.FC = () => {
   const [form] = Form.useForm<TSettings>()
   const [side, setSide] = useState<'Top' | 'Bot'>('Top') 
-  const [sector, setSector] = useState(1)
+  const [sectorId, setSectorId] = useState(1)
+  const [specificationId, setSpecificationId] = useState(1)
   const {
     settings,
     settingsStatus, 
     settingsRefetch,
     updateCoordinates,
     updateCoordinatesStatus
-  } = useSettingsHandler(sector,side)
+  } = useSettingsHandler(sectorId ,side, specificationId)
 
   const [
     updatedCoordinates, 
@@ -38,8 +40,12 @@ export const MainPage: React.FC = () => {
     setCurrentBoardIndex
   ] = useState<number | undefined>(undefined)
 
+  const handleSpecification = (specificationPicked: number) => {
+    setSpecificationId(specificationPicked)
+  }
+
   const handleSector = (sectorsPicked: number) => {
-    setSector(sectorsPicked)
+    setSectorId(sectorsPicked)
   }
 
   const handleSide = (sidePicked: string) => {
@@ -65,7 +71,7 @@ export const MainPage: React.FC = () => {
   useEffect(() => {
     settingsRefetch().then(val => setUpdatedCoordinates(val.data?.coordinates || []))
     return () => {}
-  }, [settings, sector, side, settingsRefetch, updateCoordinates])
+  }, [settings, sectorId, side, specificationId, settingsRefetch, updateCoordinates])
 
   return (<div>
     <Title level={1}>Настройки</Title>
@@ -74,6 +80,17 @@ export const MainPage: React.FC = () => {
       layout='vertical'
       style={{padding: '16px'}}
     >
+      <Form.Item label="Спецификация" style={{width: '120px'}}>
+        <SpecificationInput 
+          defaultValue={{
+            label: '10.2.16 ПЛФ',
+            value: 1
+          }}
+          isMultiple={false}
+          allowClear ={false}
+          onChange={handleSpecification} 
+        />
+      </Form.Item>
       <Form.Item label="Сектор" style={{width: '120px'}}>
         <SectorInput 
           defaultValue={{
@@ -145,7 +162,7 @@ export const MainPage: React.FC = () => {
     </Form>
     <div style={{padding: '10px'}}>  
       <MapperImage
-        path={`${process.env.REACT_APP_API_BASE_URL}/get_last_image?sector_id=${sector}&side=${side}`} 
+        path={`${process.env.REACT_APP_API_BASE_URL}/get_last_image?sector_id=${sectorId}&side=${side}&specification_id=${specificationId}`} 
         initCoordinates={markerInitCoordinates}
         handleCoordinateChange={handleCoordinateChange}
         boardIndex={currentBoardIndex} />
