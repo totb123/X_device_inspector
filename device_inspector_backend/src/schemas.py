@@ -40,6 +40,11 @@ class Sector(BaseModel):
     name: str
 
 
+class Specification(BaseModel):
+    id: int
+    name: str
+
+
 class Inspection(BaseModel):
     id: int
     sector_id: int
@@ -63,6 +68,7 @@ class InspectionsFilter(BaseModel):
 class SectorDMCoordinates(BaseModel):
     sector_id: int
     side: str
+    specification_id: int
     coordinates: List[str]
 
 class MultiBoardsFilter(BaseModel):

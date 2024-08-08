@@ -66,6 +66,11 @@ async def get_all_sectors_endpoint() -> List[schemas.Sector]:
     return get_all_sectors()
 
 
+@app.get('/specifications')
+async def get_all_specifications_endpoint() -> List[schemas.Specification]:
+    return db.get_specifications_db()
+
+
 @app.get('/inspections')
 async def get_inspections_endpoint(
         sector_ids: List[int] = Query(None),
@@ -115,14 +120,14 @@ async def get_boards_by_multiboard(multiboard_id: int):
     return db.get_boards_by_multiboard_id(multiboard_id=multiboard_id)
 
 @app.get('/change_coordinates')
-async def change_coordinates_endpoint(sector_id: int, side: str, coordinates: List[str] = Query(None)) -> int:
-    return db.change_dm_coordinates(sector_id, side, coordinates[0], coordinates[1], coordinates[2], coordinates[3],
+async def change_coordinates_endpoint(sector_id: int, specification_id: int, side: str, coordinates: List[str] = Query(None)) -> int:
+    return db.change_dm_coordinates(sector_id, specification_id, side, coordinates[0], coordinates[1], coordinates[2], coordinates[3],
                        coordinates[4], coordinates[5], coordinates[6], coordinates[7])
     
 
 @app.get('/get_coordinates')
-async def get_coordinaes_endpoint(sector_id: int, side: str) -> schemas.SectorDMCoordinates: 
-    return get_coordinates(sector_id, side)
+async def get_coordinaes_endpoint(sector_id: int, side: str, specification: int) -> schemas.SectorDMCoordinates: 
+    return get_coordinates(sector_id, side, specification)
 
 @app.get('/get_status')
 async def get_status_endpoint(inspection_id: int):
@@ -167,8 +172,9 @@ async def get_minio_image(path: str):
     
 
 @app.get('/get_last_image')
-async def get_last_image(sector_id: int, side):
-    inspection = db.get_last_inspection(sector_id, side)
+async def get_last_image(sector_id: int, side: str, specification_id: int):
+    multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)
+    inspection = db.get_last_inspection(sector_id, side, multiboard_ids)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
     if os.path.exists(file_path):
         with open (file_path, 'rb') as file:
@@ -180,18 +186,6 @@ async def get_last_image(sector_id: int, side):
 @app.post('/edit_dms')
 async def edit_dms(dto: schemas.EditDMsInput):
     return db.edit_dms(dto)
-
-
-@app.post('/test_archive')
-async def test_archive(num: int):
-    archive_day = datetime.now() - timedelta(days=1)
-    start_of_day = datetime.combine(archive_day, time.min)
-    end_of_day = datetime.combine(archive_day, time.max)
-    inspections = get_inspections_by_criteria(start_time=start_of_day, end_time=end_of_day)
-    dir_name = f"{os.environ.get('FILE_PATH', './static')}"
-    zip_name = f"{archive_day.strftime('%Y_%m_%d')}.zip"
-    minio = MinIORepository()
-    minio.archive_files(inspections, dir_name, zip_name)
 
 
 if __name__ == '__main__':
