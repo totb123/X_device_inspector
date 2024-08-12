@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Table, Boolean,ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -11,6 +11,7 @@ class Sector(Base):
     step_num = Column(Integer)
     name = Column(String)
 
+
 class Comment(Base):
     __tablename__ = 'comments'
     id = Column(Integer, primary_key=True)
@@ -22,25 +23,33 @@ class Inspection(Base):
     __tablename__ = 'inspections'
     id = Column(Integer, primary_key=True)
     time = Column(DateTime)
-    multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
+    multiboard_id = Column(Integer, ForeignKey('multiboards.id'))
     multiboard = relationship("Multiboard")
     url_image = Column(String)
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
     side = Column(String)
+    reading_order = Column(Boolean)
 
 
 class Multiboard(Base):
     __tablename__ = 'multiboards'
-    multiboard_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+
+
+class DefectType(Base):
+    __tablename__ = 'defects_types'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    defect_name = Column(String, nullable=False)
 
 
 class Board(Base):
     __tablename__ = 'boards'
     id = Column(Integer, primary_key=True)
-    multiboard_id = Column(Integer, ForeignKey('multiboards.multiboard_id'))
+    multiboard_id = Column(Integer, ForeignKey('multiboards.id'))
     datamatrix = Column(String)
+    defect_type = Column(ARRAY(Integer))
     multiboard = relationship("Multiboard")
 
 
