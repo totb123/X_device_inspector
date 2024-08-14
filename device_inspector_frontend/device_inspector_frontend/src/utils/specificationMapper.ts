@@ -1,5 +1,4 @@
 import type {SelectProps} from 'antd'
-import {TSector} from '../types/sectorType'
 import { TSpecification } from '../types/specificationType'
 
 export default function mapSpecificationIds(

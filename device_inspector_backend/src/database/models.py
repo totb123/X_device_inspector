@@ -68,3 +68,11 @@ class Specification(Base):
     __tablename__ = 'specifications'
     id = Column(Integer, primary_key=True)
     name = Column(String)
+
+
+class CurrentParty(Base):
+    __tablename__ = 'current_party'
+    id = Column(Integer, primary_key=True)
+    side = Column(String)
+    specification_id = Column(Integer, ForeignKey('specifications.id'))
+    specification = relationship("Specification")

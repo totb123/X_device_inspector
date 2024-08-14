@@ -182,18 +182,21 @@ def edit_dms(dto: schemas.EditDMsInput):
     return True
 
 
-def set_time_in_inspection(ins_id):
+def get_current_party(): 
     db = get_connection()
-    query = db.query(models.Inspection).filter(
-            models.Inspection.id == ins_id
-            )
+    return db.query(models.CurrentParty).first()
+
+
+def update_current_party(specification_id: int, side: str):
+    db = get_connection()
+    query = db.query(models.CurrentParty)
     query.update({
-            models.Inspection.time: datetime.now(),
+            models.CurrentParty.specification_id: specification_id,
+            models.CurrentParty.side: side.lower(),
         }, synchronize_session=False)
     db.commit()
     db.close()
     return True
-
 
 
 def get_connection():
