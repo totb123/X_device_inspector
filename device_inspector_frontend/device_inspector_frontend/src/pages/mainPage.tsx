@@ -6,8 +6,8 @@ import {
   InspectionSearchPage 
 } from '../features/inspectionsSearch/index'
 import { InspectionsHistoryPage } from '../features/inspectionsHistory'
-import MenuItem from 'antd/es/menu/MenuItem'
 import { SettingsPage } from '../features/settings'
+import { CurrentPartyPage } from '../features/currentParty'
 
 const pages= [{
   key: '0',
@@ -18,6 +18,9 @@ const pages= [{
 },{
   key: '2',
   label: 'Настройки',
+},{
+  key: '3',
+  label: 'Партия',
 }]
 
 export const MainPage = () => {
@@ -57,6 +60,8 @@ React.FC<{selectedPage: string}> = ({selectedPage}) => {
         return <InspectionsHistoryPage />
       case pages[2].key:
         return <SettingsPage/>
+      case pages[3].key:
+        return <CurrentPartyPage/>
       default: 
         return <InspectionSearchPage/>
     }

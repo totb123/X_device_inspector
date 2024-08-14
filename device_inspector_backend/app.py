@@ -188,5 +188,15 @@ async def edit_dms(dto: schemas.EditDMsInput):
     return db.edit_dms(dto)
 
 
+@app.get('/get_current_party')
+async def get_current_party():
+    return db.get_current_party()
+
+
+@app.post('/update_current_party')
+async def update_current_party(specification_id: int, side: str):
+    return db.update_current_party(specification_id, side)
+
+
 if __name__ == '__main__':
     uvicorn.run(app, host=AppConfig.host, port=AppConfig.port)
