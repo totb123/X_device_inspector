@@ -16,7 +16,7 @@ export const InspectionCard: React.FC<InspectionCardProps> = (
   {inspection, handleModal, highlightedDatamatrices}
 ) => {
   return (
-    <Card style={{width: 1000, margin: 10 }} hoverable={true}>
+    <Card style={{width: 800, margin: 10 }} hoverable={true}>
       <Space direction={'horizontal'}>
         {/* eslint-disable-next-line @stylistic/max-len */}
         <Image src={`${process.env.REACT_APP_API_BASE_URL}/get_image?path=${inspection.url_image}`}
