@@ -12,9 +12,32 @@ from src.services.get_all_sectors import get_all_sectors
 from src.services.get_inspections import get_inspections
 from src.services.get_coordinates import get_coordinates
 from src.services.update_inspections import update_inspections
+from src.services.get_image import get_image_from_zip_service
 import os
 
-app = FastAPI()
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+
+from redis import asyncio as aioredis
+
+from datetime import datetime, timedelta, time
+import os
+from src.database.db import get_inspections_by_criteria
+from src.database.iminio import MinIORepository
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 origins = [
     'http://localhost:9090',
@@ -41,6 +64,11 @@ app.mount(path='/static/', app=StaticFiles(directory=os.environ.get('FILE_PATH',
 @app.get('/sectors')
 async def get_all_sectors_endpoint() -> List[schemas.Sector]:
     return get_all_sectors()
+
+
+@app.get('/specifications')
+async def get_all_specifications_endpoint() -> List[schemas.Specification]:
+    return db.get_specifications_db()
 
 
 @app.get('/inspections')
@@ -94,14 +122,14 @@ async def get_boards_by_multiboard(multiboard_id: int):
     return db.get_boards_by_multiboard_id(multiboard_id=multiboard_id)
 
 @app.get('/change_coordinates')
-async def change_coordinates_endpoint(sector_id: int, side: str, coordinates: List[str] = Query(None)) -> int:
-    return db.change_dm_coordinates(sector_id, side, coordinates[0], coordinates[1], coordinates[2], coordinates[3],
+async def change_coordinates_endpoint(sector_id: int, specification_id: int, side: str, coordinates: List[str] = Query(None)) -> int:
+    return db.change_dm_coordinates(sector_id, specification_id, side, coordinates[0], coordinates[1], coordinates[2], coordinates[3],
                        coordinates[4], coordinates[5], coordinates[6], coordinates[7])
     
 
 @app.get('/get_coordinates')
-async def get_coordinaes_endpoint(sector_id: int, side: str) -> schemas.SectorDMCoordinates: 
-    return get_coordinates(sector_id, side)
+async def get_coordinaes_endpoint(sector_id: int, side: str, specification: int) -> schemas.SectorDMCoordinates: 
+    return get_coordinates(sector_id, side, specification)
 
 @app.get('/get_status')
 async def get_status_endpoint(inspection_id: int):
@@ -130,8 +158,6 @@ async def upload_file(inspection_id: int, file: UploadFile = File(...)):
 
 @app.get('/get_image')
 async def get_image(path: str):
-    # file_path = f"D:/PycharmProjects/device_inspector-master/device_inspector_backend/static/{path}"
-    # print(file_path)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{path}"
     if os.path.exists(file_path):
         with open (file_path, 'rb') as file:
@@ -141,9 +167,16 @@ async def get_image(path: str):
         return {'error': 'File not found'}
     
 
+@app.get('/get_minio_image')
+async def get_minio_image(path: str):
+    image = get_image_from_zip_service(path)
+    return Response(content=image, media_type='image/jpeg')
+    
+
 @app.get('/get_last_image')
-async def get_last_image(sector_id: int, side):
-    inspection = db.get_last_inspection(sector_id, side)
+async def get_last_image(sector_id: int, side: str, specification_id: int):
+    multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)
+    inspection = db.get_last_inspection(sector_id, side, multiboard_ids)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
     if os.path.exists(file_path):
         with open (file_path, 'rb') as file:
@@ -151,6 +184,20 @@ async def get_last_image(sector_id: int, side):
         return Response(content=image, media_type='image/jpeg')
     else: 
         return {'error': 'File not found'}
+    
+@app.post('/edit_dms')
+async def edit_dms(dto: schemas.EditDMsInput):
+    return db.edit_dms(dto)
+
+
+@app.get('/get_current_party')
+async def get_current_party():
+    return db.get_current_party()
+
+
+@app.post('/update_current_party')
+async def update_current_party(specification_id: int, side: str):
+    return db.update_current_party(specification_id, side)
 
 
 @app.get('/change_controversial_status')

@@ -13,10 +13,9 @@ class BoardStatus(Enum):
 
 class Board(BaseModel):
     id: int
-    #? используется?
-    # code: Optional[str] | None
     datamatrix: str
     multiboard_id: int
+    side: str
     model_config = ConfigDict(from_attributes=True)
 
 class MultiBoard(BaseModel):
@@ -43,11 +42,17 @@ class Sector(BaseModel):
     name: str
 
 
+class Specification(BaseModel):
+    id: int
+    name: str
+
+
 class Inspection(BaseModel):
     id: int
     sector_id: int
     multiboard_id: int
     url_image: str
+    side: str
     time: datetime
     status: BoardStatus
 
@@ -66,8 +71,14 @@ class InspectionsFilter(BaseModel):
 class SectorDMCoordinates(BaseModel):
     sector_id: int
     side: str
+    specification_id: int
     coordinates: List[str]
 
 class MultiBoardsFilter(BaseModel):
     ids: Optional[List[int]] = None
     board_codes: Optional[List[str]] = None
+
+
+class EditDMsInput(BaseModel):
+    board_ids: list[int]
+    dms: list[str]

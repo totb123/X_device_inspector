@@ -41,7 +41,7 @@ const CommentDisplay: React.FC<CommentDisplayProps> = (
   {comments, status}
 ) => {
   if (status === 'loading' || comments === undefined) return <Spin/>
-  if (comments.length === 0 ) return <Empty/>
+  if (comments.length === 0 ) return <></>
 
   return <>
     <Card title='Комментарии'

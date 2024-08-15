@@ -5,14 +5,16 @@ import {
   Row, 
   Space, 
   Image, 
-  Card} from 'antd'
+  Card,
+  Tag} from 'antd'
 import React, {useEffect } from 'react'
 import { TInspection } from '../types/inspectionType'
 import { LoadingOutlined } from '@ant-design/icons'
 import { SectorBadge } from './sectorBagde'
-import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardGet'
+// eslint-disable-next-line @stylistic/max-len
+import useBoardsGet from '../features/inspectionsHistory/hooks/useBoardHandler'
 import { CommentsDisplayedForm } from './commentsDisplayedForm'
-import { DataMatrix } from './datamatrixGrid'
+import { DataMatrixGridModal } from './datamatrixGridModal'
 import { StatusBagde } from './statusBagde'
 
 type InspectionModalData = {
@@ -43,7 +45,9 @@ React.FC<InspectionModalData> = ({
     return () => {
     }
   }, [boards, boardsStatus])
+
   useEffect(() => {}, [highlightedDatamatrices])
+
   return (<Modal
     width={'60%'}
     closable={false}
@@ -110,6 +114,13 @@ const DataDisplay: React.FC<DataDisplayProps> = (
               ).toLocaleString()
             }
           </Card>
+          <Card 
+            type='inner' 
+            style={{margin: '16px'}} 
+            size='small' 
+            title="Сторона">
+            <Tag>{inspection.side}</Tag>
+          </Card>
         </Col>
       </Row>
       <Row gutter={[16, 16]} justify={'start'}>
@@ -119,8 +130,7 @@ const DataDisplay: React.FC<DataDisplayProps> = (
             inspectionId={inspection.id}
             changeStatus={changeStatus}
           />
-          <DataMatrix 
-            inner
+          <DataMatrixGridModal
             highlightedDatamatrix={highlightedDatamatrices}
             multiboardId={inspection.multiboard_id}
           />

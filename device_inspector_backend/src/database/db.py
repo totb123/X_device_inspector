@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 from sqlalchemy import create_engine, and_, update, func
+=======
+from sqlalchemy import create_engine
+>>>>>>> 01950fc85a915228b1b6398a018a4d7e77d1a9e2
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import desc
+from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from src.database import models
 from src.services.determine_reading_order import determine_reading_order
@@ -77,6 +81,7 @@ def add_inspection_image(inspection_id: int, image_path: str):
     except:
         return False
 
+<<<<<<< HEAD
 
 def get_last_inspection(sector_id: int, side: str) -> models.Inspection:
     db = get_connection()
@@ -84,6 +89,22 @@ def get_last_inspection(sector_id: int, side: str) -> models.Inspection:
         models.Inspection.side == side.lower(),
         models.Inspection.sector_id == sector_id
     ).first()
+=======
+def get_last_inspection(sector_id: int, side: str, multiboard_ids: list[int]) -> models.Inspection: 
+    db = get_connection()
+    return db.query(models.Inspection).filter(
+        models.Inspection.side == side.lower(), 
+        models.Inspection.sector_id == sector_id,
+        models.Inspection.multiboard_id.in_(multiboard_ids),
+    ).all()[-1]
+
+def get_multiboard_ids_by_specification(specification_id: int) -> list[int]: 
+    db = get_connection()
+    multiboards = db.query(models.Multiboard).filter(
+        models.Multiboard.specification_id == specification_id,
+    ).all()
+    return list(map(lambda multiboard: multiboard.id, multiboards))
+>>>>>>> 01950fc85a915228b1b6398a018a4d7e77d1a9e2
 
 
 def get_status_by_dm(inspection_id):
@@ -140,6 +161,7 @@ def get_sector_db() -> list[schemas.Sector]:
     return sectors
 
 
+<<<<<<< HEAD
 def get_dm_coordinates(sector_id, side) -> models.SectorsDMPosition:
     db = get_connection()
     return db.query(models.SectorsDMPosition).filter(
@@ -154,6 +176,32 @@ def change_dm_coordinates(sector_id, side, coordinates_1, coordinates_2, coordin
     db = get_connection()
     query = db.query(models.SectorsDMPosition).filter(models.SectorsDMPosition.side == side.lower(),
                                                       models.SectorsDMPosition.id_sector == sector_id)
+=======
+def get_specifications_db() -> list[schemas.Sector]:
+    db = get_connection()
+    db_specifications = db.query(models.Specification).all()
+    specifications = [schemas.Specification(**(element.__dict__)) for element in db_specifications]
+    return specifications
+
+
+def get_dm_coordinates(sector_id, side, specification_id) -> models.SectorsDMPosition: 
+    db = get_connection()
+    return db.query(models.SectorsDMPosition).filter(
+        models.SectorsDMPosition.side == side.lower(), 
+        models.SectorsDMPosition.id_sector == sector_id,
+        models.SectorsDMPosition.specification_id == specification_id,
+    ).first()
+    
+
+def change_dm_coordinates(sector_id, specification_id, side, coordinates_1, coordinates_2, coordinates_3, coordinates_4, coordinates_5,
+                       coordinates_6, coordinates_7, coordinates_8):
+    db = get_connection()
+    query = db.query(models.SectorsDMPosition).filter(
+        models.SectorsDMPosition.side == side.lower(), 
+        models.SectorsDMPosition.id_sector == sector_id,
+        models.SectorsDMPosition.specification_id == specification_id,
+        )
+>>>>>>> 01950fc85a915228b1b6398a018a4d7e77d1a9e2
     count = query.update({
         models.SectorsDMPosition.coordinates_1: coordinates_1,
         models.SectorsDMPosition.coordinates_2: coordinates_2,
@@ -168,6 +216,7 @@ def change_dm_coordinates(sector_id, side, coordinates_1, coordinates_2, coordin
     db.close()
     return count
 
+<<<<<<< HEAD
 
 def change_controversial_data(inspection_id, defective_flag):
     db = get_connection()
@@ -237,6 +286,37 @@ def update_controversial_inspection(inspection_id, new_multiboard_id, defective_
     db.query(models.Inspection).filter_by(id=inspection_id).update(
         {k: v for k, v in update_data.items() if v is not None})
     db.commit()
+=======
+def edit_dms(dto: schemas.EditDMsInput):
+    db = get_connection()
+    for index, board_id in enumerate(dto.board_ids):
+        query = db.query(models.Board).filter(
+            models.Board.id == board_id
+            )
+        query.update({
+            models.Board.datamatrix: dto.dms[index],
+        }, synchronize_session=False)
+    db.commit()
+    db.close()
+    return True
+
+
+def get_current_party(): 
+    db = get_connection()
+    return db.query(models.CurrentParty).first()
+
+
+def update_current_party(specification_id: int, side: str):
+    db = get_connection()
+    query = db.query(models.CurrentParty)
+    query.update({
+            models.CurrentParty.specification_id: specification_id,
+            models.CurrentParty.side: side.lower(),
+        }, synchronize_session=False)
+    db.commit()
+    db.close()
+    return True
+>>>>>>> 01950fc85a915228b1b6398a018a4d7e77d1a9e2
 
 
 def get_connection():

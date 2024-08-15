@@ -10,14 +10,15 @@ import { useEffect, useRef, useState } from 'react'
 
 export const useSettingsHandler = (
   sectorId: number, 
-  side: 'Top' | 'Bot'
+  side: 'Top' | 'Bot',
+  specificationId: number
 ) => {
   const {
     data, status, refetch
   } = useQuery(['coordinates'],
     {
       queryFn: () => 
-        getCoordinates(sectorId, side)
+        getCoordinates(sectorId, side, specificationId)
     }
   )
   const [initialFetch, setInitialFetch] = useState(true)
@@ -39,7 +40,8 @@ export const useSettingsHandler = (
     async (
       coordinates: string[]
     ) => await updateCoordinates(
-      {sector: sectorId, side: side, coordinates: coordinates} 
+      {sectorId: sectorId, side: side, 
+        specificationId: sectorId, coordinates: coordinates} 
     ), {
       onSuccess: () => {
         refetch()

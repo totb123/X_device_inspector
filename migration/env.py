@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 import sys
 sys.path.append("D:\\PycharmProjects\\X_device_inspector\\X_device_inspector\\X_device_ins\\src\\database")
-from db_init import Base
+from X_device_ins.src.database.db_init import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

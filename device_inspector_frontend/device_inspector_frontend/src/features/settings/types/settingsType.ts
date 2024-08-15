@@ -1,5 +1,6 @@
 export type TSettings = {
-  sector: number
+  sectorId: number
   side: 'Top' | 'Bot'
+  specificationId: number
   coordinates: string[]
 }
