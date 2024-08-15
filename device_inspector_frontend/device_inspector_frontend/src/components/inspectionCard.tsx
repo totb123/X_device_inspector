@@ -84,6 +84,9 @@ const convertStatusString = (
       
     case 'DEFECTIVE':
       return <Tag color={'red'}>Брак</Tag>
+
+    case 'REQUIRE_VERIFICATION':
+      return <Tag color={'orange'}>Требуется проверка</Tag>
       
     default:
       return <Tag>Статус неизвестен</Tag>

@@ -50,6 +50,7 @@ async def get_inspections_endpoint(
         datamatrices: List[str] = Query(None),
         start_date: datetime | None = None,
         end_date: datetime | None = None,
+        status: List[str] = Query(None),
         skip: int | None = None,
         limit: int | None = None
 ) -> List[schemas.Inspection]:
@@ -59,11 +60,12 @@ async def get_inspections_endpoint(
         start_date=start_date,
         datamatrices=datamatrices,
         end_date=end_date,
+        status=status,
         skip=skip,
         limit=limit
     )
     return get_inspections(filters, db.get_inspections_by_criteria(start_date, end_date, multi_board_ids, sector_ids,
-                                                                datamatrices))
+                                                                datamatrices,status))
 
 
 @app.get('/inspections/count')
@@ -88,7 +90,7 @@ async def get_inspections_count(
         ))
 
 @app.get('/boards')
-async def get_boards_by_multiboard(multiboard_id: int): 
+async def get_boards_by_multiboard(multiboard_id: int):
     return db.get_boards_by_multiboard_id(multiboard_id=multiboard_id)
 
 @app.get('/change_coordinates')
@@ -149,6 +151,12 @@ async def get_last_image(sector_id: int, side):
         return Response(content=image, media_type='image/jpeg')
     else: 
         return {'error': 'File not found'}
+
+
+@app.get('/change_controversial_status')
+async def change_controversial_status(inspection_id: str, confirmation_flag: bool):
+
+    return db.change_controversial_data(int(inspection_id), confirmation_flag)
 
 
 if __name__ == '__main__':

@@ -11,15 +11,20 @@ def choosing_option_create_inspection(inspection, db):
 
     if flag_dm_repeat:
         if sector_id_repeat:
-            marking_defect = mock_operator_question()
-            defect_type = [4] if marking_defect else None
-            reading_order_override = True if marking_defect else None
-            update_flag = False if marking_defect else True
+            defect_type = [4]
+            reading_order_override = True
+            update_flag = False
             return defect_type, reading_order_override, update_flag
         else:
-            return None, None, True
+            defect_type = None
+            reading_order_override = None
+            update_flag = True
+            return defect_type, reading_order_override, update_flag
     else:
-        return None, None, False
+        defect_type = None
+        reading_order_override = None
+        update_flag = False
+        return defect_type, reading_order_override, update_flag
 
 
 def get_dm_data_repeat(dm_data, sector_id, db):

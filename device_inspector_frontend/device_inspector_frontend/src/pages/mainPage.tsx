@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Layout, Menu } from 'antd'
 import { useState } from 'react'
-import { 
-  InspectionSearchPage 
+import {
+  InspectionSearchPage
 } from '../features/inspectionsSearch/index'
 import { InspectionsHistoryPage } from '../features/inspectionsHistory'
 import MenuItem from 'antd/es/menu/MenuItem'
@@ -23,7 +23,7 @@ const pages= [{
 export const MainPage = () => {
 
   const [selectedPage, setSelectedPage] = useState(pages[0].key)
-  
+
   const handlePageSelection = (selectedPage: any) => {
     setSelectedPage(selectedPage.key)
   }
@@ -47,7 +47,7 @@ export const MainPage = () => {
   )
 }
 
-const PageSwitchContainer: 
+const PageSwitchContainer:
 React.FC<{selectedPage: string}> = ({selectedPage}) => {
   const pageSwitch = () => {
     switch (selectedPage) {
@@ -57,7 +57,7 @@ React.FC<{selectedPage: string}> = ({selectedPage}) => {
         return <InspectionsHistoryPage />
       case pages[2].key:
         return <SettingsPage/>
-      default: 
+      default:
         return <InspectionSearchPage/>
     }
   }

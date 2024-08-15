@@ -69,6 +69,10 @@ export const StatusBagde: React.FC<StatusProps> = (
       {
         label: 'Брак',
         value: 'DEFECTIVE'
+      },
+      {
+        label: 'Требуется проверка',
+        value: 'REQUIRE_VERIFICATION'
       }
       ]}/>
   </Card>

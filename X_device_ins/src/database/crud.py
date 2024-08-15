@@ -28,29 +28,37 @@ def get_dm_position(sector_id):
     return top_dict, bot_dict
 
 
-def add_boards(data, side, multiboard_id, db, defect_type=None):
+# def add_boards(data, side, multiboard_id, db, defect_type=None): удалить после проверки
+#     if defect_type is None:
+#         defect_type = []
+#
+#     for i in range(8):
+#         if data[i] == '0':
+#             defect_type.append(5)
+#         new_board = Board(multiboard_id=multiboard_id,
+#                           datamatrix=data[i], side=side,
+#                           defect_type=defect_type.copy())
+#         if data[i] == '0':
+#             defect_type.remove(5)
+#         db.add(new_board)
+#         db.commit()
+
+
+def create_boards(inspection, multiboard_id, defect_type=None):
+    db = get_connection()
     if defect_type is None:
         defect_type = []
 
     for i in range(8):
-        if data[i] == '0':
+        if inspection.dm_values[i] == '0':
             defect_type.append(5)
         new_board = Board(multiboard_id=multiboard_id,
-                          datamatrix=data[i], side=side,
+                          datamatrix=inspection.dm_values[i], side=inspection.side,
                           defect_type=defect_type.copy())
-        if data[i] == '0':
+        if inspection.dm_values[i] == '0':
             defect_type.remove(5)
         db.add(new_board)
         db.commit()
-
-
-def create_boards(inspection, multiboard_id, defect_type=None):
-    if defect_type is None:
-        defect_type = []
-
-    db = get_connection()
-    add_boards(inspection.dm_values, inspection.side, multiboard_id, db, defect_type)
-    # add_boards(inspection.dm_values_backside, inspection.side_backside, multiboard_id, db, defect_type) не нужна обратная сторона
 
 
 def create_mulriboard():
@@ -61,17 +69,17 @@ def create_mulriboard():
     return new_multiboard.id
 
 
-def get_multiboard(dm_valuse_without_zero):
+def get_multiboard(dm_values_without_zero):
     db = get_connection()
     checking_existence_multiboard_list = db.query(Board.multiboard_id).filter(
-        Board.datamatrix.in_(dm_valuse_without_zero)).first()
+        Board.datamatrix.in_(dm_values_without_zero)).first()
     return checking_existence_multiboard_list
 
 
 def create_inspection(inspection, reverse_flag, multiboard_id_for_new_inspection, status):
     db = get_connection()
     if status == [4]:
-        status = 'DEFECTIVE'
+        status = 'REQUIRE_VERIFICATION'
     else:
         status = 'UNCHECKED'
 

@@ -1,13 +1,15 @@
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Dict
-
 from pydantic import BaseModel, ConfigDict
+
 
 class BoardStatus(Enum):
     UNCHECKED = 'UNCHECKED'
     NORMAL = 'NORMAL'
     DEFECTIVE = 'DEFECTIVE'
+    REQUIRE_VERIFICATION = 'REQUIRE_VERIFICATION'
+
 
 class Board(BaseModel):
     id: int
@@ -56,6 +58,7 @@ class InspectionsFilter(BaseModel):
     start_date: Optional[datetime] = None
     datamatrices: Optional[List[str]] = None
     end_date: Optional[datetime] = None
+    status: Optional[List[str]] = None
     skip: Optional[int] = None
     limit: Optional[int] = None
 
