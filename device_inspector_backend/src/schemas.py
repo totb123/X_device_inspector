@@ -64,7 +64,7 @@ class InspectionsFilter(BaseModel):
     datamatrices: Optional[List[str]] = None
     end_date: Optional[datetime] = None
     status: Optional[List[str]] = None
-    party: Optional[List[str]] = None
+    parties: Optional[List[str]] = None
     skip: Optional[int] = None
     limit: Optional[int] = None
 

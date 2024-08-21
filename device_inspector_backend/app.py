@@ -90,7 +90,7 @@ async def get_inspections_endpoint(
         datamatrices=datamatrices,
         end_date=end_date,
         status=status,
-        party=parties,
+        parties=parties,
         skip=skip,
         limit=limit
     )
@@ -116,7 +116,7 @@ async def get_inspections_count(
         datamatrices=datamatrices,
         end_date=end_date,
         status=status,
-        party=parties,
+        parties=parties,
     )
     return len(get_inspections(
         filters, db.get_inspections_by_criteria(

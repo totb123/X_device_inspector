@@ -36,7 +36,7 @@ def get_inspections_by_criteria(
         sector_ids: list[int] | None = None,
         datamatrices: list[str] | None = None,
         status: list[str] | None = None,
-        party:  list[str] | None = None
+        parties:  list[str] | None = None
 ):
     db = get_connection()
     query = db.query(models.Inspection)
@@ -53,8 +53,8 @@ def get_inspections_by_criteria(
         query = query.filter(models.Inspection.multiboard_id.in_([item[0] for item in found_multiboards]))
     if status:
         query = query.filter(models.Inspection.status.in_(status))
-    if party:
-        filters = [models.Board.datamatrix.like('_' + p + '%') for p in party]
+    if parties:
+        filters = [models.Board.datamatrix.like('_' + p + '%') for p in parties]
 
         # Объедините условия с помощью or_ для создания одного запроса
         found_multiboards = db.query(models.Board.multiboard_id).filter(or_(*filters)).all()
