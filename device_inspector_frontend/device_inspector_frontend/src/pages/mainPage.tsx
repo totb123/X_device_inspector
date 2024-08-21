@@ -60,13 +60,9 @@ React.FC<{selectedPage: string}> = ({selectedPage}) => {
         return <InspectionsHistoryPage />
       case pages[2].key:
         return <SettingsPage/>
-<<<<<<< HEAD
-      default:
-=======
       case pages[3].key:
         return <CurrentPartyPage/>
-      default: 
->>>>>>> 01950fc85a915228b1b6398a018a4d7e77d1a9e2
+      default:
         return <InspectionSearchPage/>
     }
   }

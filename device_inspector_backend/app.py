@@ -71,7 +71,7 @@ async def get_all_specifications_endpoint() -> List[schemas.Specification]:
     return db.get_specifications_db()
 
 
-@app.get('/inspections')
+@app.get('/inspections') # заменить party на parties
 async def get_inspections_endpoint(
         sector_ids: List[int] = Query(None),
         multi_board_ids: List[int] = Query(None),
@@ -79,6 +79,7 @@ async def get_inspections_endpoint(
         start_date: datetime | None = None,
         end_date: datetime | None = None,
         status: List[str] = Query(None),
+        parties: List[str] = Query(None),
         skip: int | None = None,
         limit: int | None = None
 ) -> List[schemas.Inspection]:
@@ -89,20 +90,24 @@ async def get_inspections_endpoint(
         datamatrices=datamatrices,
         end_date=end_date,
         status=status,
+        party=parties,
         skip=skip,
         limit=limit
     )
+    print(sector_ids,parties,start_date,end_date,datamatrices)
     return get_inspections(filters, db.get_inspections_by_criteria(start_date, end_date, multi_board_ids, sector_ids,
-                                                                datamatrices,status))
+                                                                datamatrices, status, parties))
 
 
 @app.get('/inspections/count')
 async def get_inspections_count(
-    sector_ids: List[int] = Query(None),
+        sector_ids: List[int] = Query(None),
         multi_board_ids: List[int] = Query(None),
         datamatrices: List[str] = Query(None),
         start_date: datetime | None = None,
         end_date: datetime | None = None,
+        status: List[str] = Query(None),
+        parties: List[str] = Query(None),
     ):
     filters = InspectionsFilter(
         sector_ids=sector_ids,
@@ -110,10 +115,12 @@ async def get_inspections_count(
         start_date=start_date,
         datamatrices=datamatrices,
         end_date=end_date,
+        status=status,
+        party=parties,
     )
     return len(get_inspections(
         filters, db.get_inspections_by_criteria(
-            start_date, end_date, multi_board_ids, sector_ids,datamatrices
+            start_date, end_date, multi_board_ids, sector_ids, datamatrices, status, parties
             )
         ))
 
@@ -127,9 +134,11 @@ async def change_coordinates_endpoint(sector_id: int, specification_id: int, sid
                        coordinates[4], coordinates[5], coordinates[6], coordinates[7])
     
 
+
 @app.get('/get_coordinates')
 async def get_coordinaes_endpoint(sector_id: int, side: str, specification: int) -> schemas.SectorDMCoordinates: 
     return get_coordinates(sector_id, side, specification)
+
 
 @app.get('/get_status')
 async def get_status_endpoint(inspection_id: int):
@@ -148,13 +157,16 @@ async def change_status_endpoint(inspection_id: str, new_status: str) -> bool:
 async def get_comments_for_boards(inspection_id: str):
     return db.get_comments_by_inspection(int(inspection_id))
 
+
 @app.post('/comment')
 async def add_comment_endpoint(inspection_id: int, comment: schemas.CommentCreate):
     return db.add_comment(inspection_id, comment)
-    
+
+
 @app.post('/upload_image')
 async def upload_file(inspection_id: int, file: UploadFile = File(...)):
     return await update_inspections(image=file, inspection_id=inspection_id)
+
 
 @app.get('/get_image')
 async def get_image(path: str):
@@ -179,7 +191,7 @@ async def get_last_image(sector_id: int, side: str, specification_id: int):
     inspection = db.get_last_inspection(sector_id, side, multiboard_ids)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
     if os.path.exists(file_path):
-        with open (file_path, 'rb') as file:
+        with open(file_path, 'rb') as file:
             image = file.read()
         return Response(content=image, media_type='image/jpeg')
     else: 

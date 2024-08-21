@@ -38,6 +38,10 @@ export const StatusBagde: React.FC<StatusProps> = (
         statusUpdate(InspectionStatus.DEFECTIVE)
         changeStatus(true)
         break
+      case 'REQUIRE_VERIFICATION':
+        statusUpdate(InspectionStatus.REQUIRE_VERIFICATION)
+        changeStatus(true)
+        break
       default:
         break
     }

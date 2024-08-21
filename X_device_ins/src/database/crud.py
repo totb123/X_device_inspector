@@ -1,13 +1,16 @@
 from src.database.db_init import SQLALCHEMY_DATABASE_URL
 from sqlalchemy.orm import sessionmaker
-from src.database.models import SectorsDMPosition, Multiboard, Board, Inspection, Sector
+from src.database.models import SectorsDMPosition, Multiboard, Board, Inspection, Sector, CurrentParty, Specification
 from sqlalchemy import create_engine, update, not_
 import psycopg2
 
 
-def get_dm_position(sector_id):
+def get_dm_position(sector_id, current_specification):
     db = get_connection()
-    results = db.query(SectorsDMPosition).filter_by(id_sector=sector_id).all()
+    results = db.query(SectorsDMPosition).filter(
+        SectorsDMPosition.id_sector == sector_id,
+        SectorsDMPosition.specification_id == current_specification.specification_id
+    ).all()
     for result in results:
         if result.side == "top":
             top_dict = {'side': result.side,
@@ -16,7 +19,7 @@ def get_dm_position(sector_id):
                         'coordinate_3': result.coordinates_3, 'coordinate_4': result.coordinates_4,
                         'coordinate_5': result.coordinates_5, 'coordinate_6': result.coordinates_6,
                         'coordinate_7': result.coordinates_7,
-                        'coordinate_8': result.coordinates_8}  # !!! Что можно сделать, чтобы не заниматься такой ебалистикой? Описать интерфейс для этого запроса. results = db.query(FetchCoordinatesOutput).filter_by(id_sector=sector_id).all(). В переменной results у тебя все уже будет лежать.
+                        'coordinate_8': result.coordinates_8}
         else:
             bot_dict = {'side': result.side,
                         'coordinate_1': result.coordinates_1,
@@ -24,9 +27,12 @@ def get_dm_position(sector_id):
                         'coordinate_3': result.coordinates_3, 'coordinate_4': result.coordinates_4,
                         'coordinate_5': result.coordinates_5, 'coordinate_6': result.coordinates_6,
                         'coordinate_7': result.coordinates_7, 'coordinate_8': result.coordinates_8}
-
     return top_dict, bot_dict
 
+
+def get_current_specification(db):
+    current_specification = db.query(CurrentParty).first()
+    return current_specification
 
 # def add_boards(data, side, multiboard_id, db, defect_type=None): удалить после проверки
 #     if defect_type is None:
