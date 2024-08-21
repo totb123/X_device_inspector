@@ -234,6 +234,7 @@ def change_controversial_data(inspection_id, defective_flag):
         delete_multiboard(defect_board_list[0]['multiboard_id'], db)
 
 
+
 def change_controversial_boards(board_list_without_defect, defect_board_list, reading_order, db):
     count_boards = len(board_list_without_defect)
     for i in range(count_boards):
