@@ -37,9 +37,14 @@ function generateQuery(filters: SearchFilterContextType,
       parties => target.append('parties', parties)
     )
   }
-  if (filters.startDate !== undefined){
-    target.append('start_date', filters.startDate.toISOString())
+  if (filters.statuses.length) {
+    filters.statuses.forEach(
+      status => target.append('status', status)
+    )
   }
+  if (filters.startDate !== undefined)
+    target.append('start_date', filters.startDate.toISOString())
+  
   if (filters.endDate !== undefined)
     target.append('end_date', filters.endDate.toISOString())
   return target

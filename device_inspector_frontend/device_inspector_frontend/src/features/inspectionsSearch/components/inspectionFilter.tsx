@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Button, Form, Space} from 'antd'
+import {Button, Form, Select, Space} from 'antd'
 import {MultiboardInputGroup} from './multiboardInputGroup'
 import { useForm } from 'antd/es/form/Form'
 // eslint-disable-next-line @stylistic/max-len
@@ -8,6 +8,7 @@ import { PartyInputGroup } from '../../../components/partyInputGroup'
 import { FilterDatePicker } from './filterDatePicker'
 import { SectorInput } from '../../../components/sectorInput'
 import { useFilter, useFilterUpdate } from '../context/searchFilterContext'
+import { StatusSelect } from '../../../components/statusSelect'
 
 
 
@@ -16,11 +17,12 @@ type InspectionFilterProps = {
 }
 
 export type TFilterForm = {
-  sectorIds: number[],
+  sectorIds: number[]
+  statuses?: string[]
   datamatrices: string[]
   multiboardIds: string[]
   parties: string[]
-  startDate?: Date,
+  startDate?: Date
   endDate?: Date
 }
 
@@ -69,7 +71,22 @@ export const SearchInspectionFilter: React.FC<InspectionFilterProps> = ({
             })
           }}/>
         </Form.Item>
-
+        <Form.Item
+          label={'Статус'}
+          name={'status'}
+          colon={true}
+        >
+          <StatusSelect
+            allowClear
+            isMultiple
+            onChange={statuses => {
+              setFilterForm({
+                ...filterForm,
+                statuses: statuses as string[] ?? undefined
+              })
+            }}
+          />
+        </Form.Item>
         <MultiboardInputGroup
           onChange={
             multiboardIds => handleFiltersChange({ multiboardIds })

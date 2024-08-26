@@ -20,7 +20,7 @@ export const SectorInput: React.FC<SectorInputProps> = ({
       <Select mode={isMultiple ? 'multiple' : undefined}
         allowClear={allowClear}
         defaultValue={defaultValue}
-        disabled={sectorStatus != 'success'}
+        disabled={sectorStatus !== 'success'}
         onChange={onChange}
         options={mapSectorIds(sectors as TSector[])} />
       : <Spin />}

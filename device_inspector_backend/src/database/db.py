@@ -150,7 +150,10 @@ def get_sector_db() -> list[schemas.Sector]:
     sectors = [schemas.Sector(**(element.__dict__)) for element in db_sectors]
     return sectors
 
-
+def get_all_statuses_db() -> list[str]:
+    db = get_connection()
+    return db.query(models.Inspection.status).distinct().all()
+    
 # def get_dm_coordinates(sector_id, side) -> models.SectorsDMPosition:
 #     db = get_connection()
 #     return db.query(models.SectorsDMPosition).filter(

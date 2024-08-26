@@ -4,12 +4,13 @@ import uvicorn as uvicorn
 from fastapi import FastAPI, Query, File, UploadFile, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-import src.database.db as db
 from config import AppConfig
+import src.database.db as db
 import src.schemas as schemas
 from src.schemas import InspectionsFilter
 from src.services.get_all_sectors import get_all_sectors
 from src.services.get_inspections import get_inspections
+from src.services.get_all_inspections_statuses import get_all_inspection_statuses
 from src.services.get_coordinates import get_coordinates
 from src.services.update_inspections import update_inspections
 from src.services.get_image import get_image_from_zip_service
@@ -138,6 +139,10 @@ async def change_coordinates_endpoint(sector_id: int, specification_id: int, sid
 @app.get('/get_coordinates')
 async def get_coordinaes_endpoint(sector_id: int, side: str, specification: int) -> schemas.SectorDMCoordinates: 
     return get_coordinates(sector_id, side, specification)
+
+@app.get('/statuses')
+async def get_all_statuses_endpoint() -> List[str]:
+    return get_all_inspection_statuses()
 
 
 @app.get('/get_status')

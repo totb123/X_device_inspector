@@ -30,7 +30,6 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
-    side = Column(String)
     reading_order = Column(Boolean)
 
 
