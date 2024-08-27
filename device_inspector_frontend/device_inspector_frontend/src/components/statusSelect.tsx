@@ -1,6 +1,7 @@
 import { Select, Spin } from 'antd'
 import React from 'react'
 import { useStatusGet } from '../hooks/useInspectionStatusGet'
+import { InspectionStatus } from '../types/inspectionType'
 
 type StatusSelectProps = {
   isMultiple?: boolean
@@ -18,13 +19,13 @@ export const StatusSelect: React.FC<StatusSelectProps> = ({
   const [statuses, isLoading] = useStatusGet()
   const changeLabelByValue = (value: String) => {
     switch (value) {
-      case 'NORMAL':
+      case InspectionStatus.NORMAL:
         return 'Проверено'
-      case 'UNCHECKED':
+      case InspectionStatus.UNCHECKED:
         return 'Не проверено'
-      case 'DEFECTIVE':
+      case InspectionStatus.DEFECTIVE:
         return 'Брак'
-      case 'REQUIRE_VERIFICATION':
+      case InspectionStatus.REQUIRE_VERIFICATION:
         return 'Требуется проверка'
       default:
         return value

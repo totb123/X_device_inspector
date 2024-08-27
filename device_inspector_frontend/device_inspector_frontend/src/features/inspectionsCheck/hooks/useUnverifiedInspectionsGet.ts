@@ -4,7 +4,7 @@ import {
   getInspectionsTotal
 } from '../../../services/inspectionService'
 import {queryClient} from '../../../App'
-import {TInspection} from '../../../types/inspectionType'
+import {InspectionStatus, TInspection} from '../../../types/inspectionType'
 
 
 
@@ -18,7 +18,7 @@ function generateQuery(
     target.append('skip', ((offset-1) * 10).toString())
   if (limit != null)
     target.append('limit', limit.toString())
-  target.append('status', 'REQUIRE_VERIFICATION')
+  target.append('status', InspectionStatus.REQUIRE_VERIFICATION)
   return target
 }
 
@@ -39,12 +39,12 @@ export default function useUnverifiedInspectionsGet(
     refetch
   } = useQuery<TInspection[], string>(
     {
-      queryKey: ['inspectionsHistory'],
+      queryKey: ['unverifiedInspections'],
       queryFn: () => getInspections(
         generateQuery(offset, limit)
       ), 
       initialData: () => {
-        return queryClient.getQueryData('inspectionsHistory')
+        return queryClient.getQueryData('unverifiedInspections')
       }
     })
 

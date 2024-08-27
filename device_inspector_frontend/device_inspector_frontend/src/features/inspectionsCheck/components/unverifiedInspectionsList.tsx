@@ -1,20 +1,22 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 
 import {List, Pagination, Spin, Typography} from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
-import useInspectionGet from '../hooks/useUnverifiedInspectionsGet'
-import { InspectionCard } from '../../../components/inspectionCard'
+import { 
+  InspectionsVerificationContext 
+} from '../context/inspectionsVerificationContext'
+import { UnverifiedInspectionCard } from './unverifiedInspectionCard'
 
 
-type InspectionsListProps = {
+type UnveridiedInspectionsListProps = {
   toggleModal: Function
   isChangeStatus: boolean
   setIsChangeStatus: Function
 }
 
-export const InspectionsList: React.FC<InspectionsListProps> = props => {
-
-
+export const UnveridiedInspectionsList: React.FC<
+UnveridiedInspectionsListProps
+> = props => {
   const updatePaginationValues = (
     page: number, size: number
   ) => {
@@ -25,17 +27,18 @@ export const InspectionsList: React.FC<InspectionsListProps> = props => {
   const [pageSize, setPageSize] = useState(10)
   
   const {
-    inspectionsData,
+    inspections,
     inspectionsStatus,
     inspectionsRefetch,
     inspectionsTotal
-  } = useInspectionGet(currentPage, pageSize)
+  } = useContext(InspectionsVerificationContext)!
   useEffect(() => {
+    
     (inspectionsRefetch as Function)()
     inspectionsTotal.refetch()
     return () => {
     }
-  }, [currentPage, pageSize, inspectionsTotal.refetch])
+  }, [currentPage, pageSize, inspectionsTotal.refetch, inspectionsStatus])
 
   useEffect(() => {
     if (props.isChangeStatus) {
@@ -51,7 +54,7 @@ export const InspectionsList: React.FC<InspectionsListProps> = props => {
         Error
       </Paragraph>
       <Typography>
-        {inspectionsData?.toString()}
+        {inspections?.toString()}
       </Typography>
     </div>
   }
@@ -68,16 +71,17 @@ export const InspectionsList: React.FC<InspectionsListProps> = props => {
           ? <Spin/>
           : <List>
             {
-              inspectionsData!
+              inspections!
                 .map(element =>
-                  <InspectionCard
+                  <UnverifiedInspectionCard
                     key={element.id}
                     inspection={element}
                     handleModal={() => {
                       props.toggleModal(
-                        inspectionsData!,
+                        inspections!,
                         element.id)
                     }}
+                    
                   />)
             }
           </List>
