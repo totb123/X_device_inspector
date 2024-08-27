@@ -1,0 +1,87 @@
+import React, {useEffect, useState} from 'react'
+
+import {List, Pagination, Spin, Typography} from 'antd'
+import Paragraph from 'antd/es/typography/Paragraph'
+import useInspectionGet from '../hooks/useUnverifiedInspectionsGet'
+import { InspectionCard } from '../../../components/inspectionCard'
+
+
+type InspectionsListProps = {
+  toggleModal: Function
+  isChangeStatus: boolean
+  setIsChangeStatus: Function
+}
+
+export const InspectionsList: React.FC<InspectionsListProps> = props => {
+
+
+  const updatePaginationValues = (
+    page: number, size: number
+  ) => {
+    setCurrentPage(page)
+    setPageSize(size)
+  }
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pageSize, setPageSize] = useState(10)
+  
+  const {
+    inspectionsData,
+    inspectionsStatus,
+    inspectionsRefetch,
+    inspectionsTotal
+  } = useInspectionGet(currentPage, pageSize)
+  useEffect(() => {
+    (inspectionsRefetch as Function)()
+    inspectionsTotal.refetch()
+    return () => {
+    }
+  }, [currentPage, pageSize, inspectionsTotal.refetch])
+
+  useEffect(() => {
+    if (props.isChangeStatus) {
+      (inspectionsRefetch as Function)()
+      inspectionsTotal.refetch()
+      props.setIsChangeStatus(false)
+    }
+  }, [props.isChangeStatus])
+  
+  if (inspectionsStatus == 'error') {
+    return <div>
+      <Paragraph>
+        Error
+      </Paragraph>
+      <Typography>
+        {inspectionsData?.toString()}
+      </Typography>
+    </div>
+  }
+  
+  return (
+    <div>
+      <Pagination 
+        defaultCurrent={1}  
+        onChange={updatePaginationValues}
+        total={inspectionsTotal.data}
+      />
+      {
+        inspectionsStatus == 'loading'
+          ? <Spin/>
+          : <List>
+            {
+              inspectionsData!
+                .map(element =>
+                  <InspectionCard
+                    key={element.id}
+                    inspection={element}
+                    handleModal={() => {
+                      props.toggleModal(
+                        inspectionsData!,
+                        element.id)
+                    }}
+                  />)
+            }
+          </List>
+      }
+    </div>
+  )
+}
