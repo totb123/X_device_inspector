@@ -16,6 +16,20 @@ export const StatusSelect: React.FC<StatusSelectProps> = ({
   defaultValue,
 }) => {
   const [statuses, isLoading] = useStatusGet()
+  const changeLabelByValue = (value: String) => {
+    switch (value) {
+      case 'NORMAL':
+        return 'Проверено'
+      case 'UNCHECKED':
+        return 'Не проверено'
+      case 'DEFECTIVE':
+        return 'Брак'
+      case 'REQUIRE_VERIFICATION':
+        return 'Требуется проверка'
+      default:
+        return value
+    }
+  }
   return  (<div style={{width: '200px'}}> {
     isLoading === 'success' 
       ? <Select
@@ -26,7 +40,7 @@ export const StatusSelect: React.FC<StatusSelectProps> = ({
         disabled={isLoading !== 'success'}
         options={(statuses as String[]).map(status => ({
           value: status,
-          label: status,
+          label: changeLabelByValue(status),
         }))}
       />
       : <Spin />
