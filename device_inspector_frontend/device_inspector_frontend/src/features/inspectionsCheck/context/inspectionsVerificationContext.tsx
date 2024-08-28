@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect, useState } from 'react'
 // eslint-disable-next-line @stylistic/max-len
 import useUnverifiedInspectionsGet from '../hooks/useUnverifiedInspectionsGet'
 import { TInspection } from '../../../types/inspectionType'
-import { UseQueryResult } from 'react-query'
 import { useVerifyInspection } from '../hooks/useVerififyInspection'
 type TInspectionsVerificationContext = {
   inspections: TInspection[] | undefined
@@ -57,15 +56,14 @@ InspectionsVerificationProviderProps> = ({children}) => {
         break
       default:
         break
-    }
-  }
+    }}
 
   useEffect(() => {
     if (uncheckInspection.isLoading || defectInspection.isLoading) 
       inspectionsRefetch()
     
   }, [uncheckInspection.isLoading, defectInspection.isLoading])
-  
+
   return (
     <InspectionsVerificationContext.Provider value={{ 
       inspections: inspectionsData,

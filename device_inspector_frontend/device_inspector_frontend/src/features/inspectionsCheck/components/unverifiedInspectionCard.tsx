@@ -50,11 +50,12 @@ UnverUnverifiedInspectionCardProps> = ({
           </div>
         </Space>
       </Space>
-      <VerifyButtonContainer 
-        inspectionId={inspection.id}
-        
-      />
-      <Button onClick={handleModal}>Подробнее</Button>
+      <Space direction={'vertical'}>
+        <VerifyButtonContainer 
+          inspectionId={inspection.id}
+        />
+        <Button onClick={handleModal}>Подробнее</Button>
+      </Space>
     </Card>
   )
 }

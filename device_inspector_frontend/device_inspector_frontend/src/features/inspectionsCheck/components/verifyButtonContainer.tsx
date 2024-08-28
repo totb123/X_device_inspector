@@ -16,23 +16,23 @@ VerifyButtonContainerProps> = ({
     InspectionsVerificationContext
   )!
 
-  return (
+  return (<Space direction='vertical'>
+    Установить статус      
     <Space direction="horizontal">
-      Установить статус
-      {isVerifyLoading ? 
-        <Spin />
-        : 
-        <>
-          <Button onClick={() => 
-            verifyInspection('uncheck', inspectionId)}>
-            Не проверено
-          </Button>
-          <Button onClick={() => 
-            verifyInspection('defect', inspectionId)}>
-            Брак
-          </Button>
-        </>
-      }
+      <Button 
+        loading={isVerifyLoading}
+        onClick={() => 
+          verifyInspection('uncheck', inspectionId)}>
+        Не проверено
+      </Button>
+      <Button 
+        danger 
+        loading={isVerifyLoading}
+        onClick={() => 
+          verifyInspection('defect', inspectionId)}>
+        Брак
+      </Button>
     </Space>
+  </Space>
   )
 }
