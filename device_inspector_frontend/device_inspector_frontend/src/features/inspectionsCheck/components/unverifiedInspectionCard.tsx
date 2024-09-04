@@ -1,20 +1,25 @@
 import Card from 'antd/es/card/Card'
 import React from 'react'
 import {Button, Divider, Image, Space, Tag, Typography} from 'antd'
-import { TInspection } from '../types/inspectionType'
-import { SectorBadge } from './sectorBagde'
-import { DataMatrixGridCard } from './datamatrixGridCard'
+import { TInspection } from '../../../types/inspectionType'
+import { SectorBadge } from '../../../components/sectorBagde'
+import { DataMatrixGridCard } from '../../../components/datamatrixGridCard'
+import { VerifyButtonContainer } from './verifyButtonContainer'
 const {Text} = Typography
 
-type InspectionCardProps = {
+type UnverUnverifiedInspectionCardProps = {
   inspection: TInspection
   highlightedDatamatrices?: string[] 
   handleModal: () => void
+  
 }
 
-export const InspectionCard: React.FC<InspectionCardProps> = (
-  {inspection, handleModal, highlightedDatamatrices}
-) => {
+export const UnverifiedInspectionCard: React.FC<
+UnverUnverifiedInspectionCardProps> = ({
+  inspection, 
+  handleModal, 
+  highlightedDatamatrices
+}) => {
   return (
     <Card style={{width: 800, margin: 10 }} hoverable={true}>
       <Space direction={'horizontal'}>
@@ -45,7 +50,12 @@ export const InspectionCard: React.FC<InspectionCardProps> = (
           </div>
         </Space>
       </Space>
-      <Button onClick={handleModal}>Подробнее</Button>
+      <Space direction={'vertical'}>
+        <VerifyButtonContainer 
+          inspectionId={inspection.id}
+        />
+        <Button onClick={handleModal}>Подробнее</Button>
+      </Space>
     </Card>
   )
 }

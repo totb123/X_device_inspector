@@ -16,7 +16,6 @@ function generateQuery(filters: SearchFilterContextType,
   let target = new URLSearchParams()
   target.append('skip', ((offset - 1) * 10).toString())
   target.append('limit', limit.toString())
-  
   if (filters.sectorIds.length) {
     filters.sectorIds.forEach(
       sectorId => target.append('sector_ids', sectorId.toString())
@@ -33,12 +32,22 @@ function generateQuery(filters: SearchFilterContextType,
       datatmatrix => target.append('datamatrices', datatmatrix)
     )
   }
-  if (filters.startDate !== undefined){
-    console.log(filters.startDate)
-    target.append('start_date', filters.startDate.toISOString())
+  if (filters.parties.length) {
+    filters.parties.forEach(
+      parties => target.append('parties', parties)
+    )
   }
+  if (filters.statuses.length) {
+    filters.statuses.forEach(
+      status => target.append('status', status)
+    )
+  }
+  if (filters.startDate !== undefined)
+    target.append('start_date', filters.startDate.toISOString())
+  
   if (filters.endDate !== undefined)
     target.append('end_date', filters.endDate.toISOString())
+  console.warn(target)
   return target
 }
 

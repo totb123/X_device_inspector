@@ -47,7 +47,6 @@ class MinIORepository:
             return True
         except S3Error as exc:
             return False
-        
 
     def create_txt_file_and_save_image(self, inspection: TInspectionXDI):
         try:
@@ -71,7 +70,6 @@ class MinIORepository:
             return True
         except S3Error as exc:
             return False
-        
 
     def archive_files(self, inspections: list[Inspection], dir_name: str, zip_name: str):
         try:
@@ -95,7 +93,6 @@ class MinIORepository:
         except S3Error as exc:
             print(f"MinIO error: {exc}")
             return False
-        
 
     def unzip_files(self, zip_name: str, dir_to_save: str):
         try:

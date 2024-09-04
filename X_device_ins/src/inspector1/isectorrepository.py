@@ -22,17 +22,18 @@ def get_camera(sector_id: int, camera_list: list) -> Optional[Camera]:
     return None
 
 
-def get_coordinates(sector_id: int) -> SectorCoords:
-    dm_position_result_top, dm_position_result_bot = get_dm_position(sector_id)
+def get_coordinates(sector_id: int, current_specification) -> SectorCoords: # доделать тип данных
+    dm_position_result_top, dm_position_result_bot = get_dm_position(sector_id, current_specification)
     coordinates_list_top = extract_coordinates(dm_position_result_top)
     coordinates_list_bot = extract_coordinates(dm_position_result_bot)
     return SectorCoords(coordinates_list_top, coordinates_list_bot)
 
 
 class ISectorRepository:
-    def get_sector_data(self, sector_id: int, camera_list: list) -> Sector:
+    def get_sector_data(self, sector_id: int, camera_list: list, current_specification) -> Sector:
         camera = get_camera(sector_id, camera_list)
-        sector_coords = get_coordinates(sector_id)
+        print("wefwf")
+        sector_coords = get_coordinates(sector_id, current_specification)
         return Sector(camera, sector_coords)
 
 

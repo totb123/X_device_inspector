@@ -22,12 +22,14 @@ class Inspection:
 
 
 class InsertInspection:
-    def __init__(self, dm_values, side, datetime, sector_id, img_path):
+    def __init__(self, dm_values, side, datetime, sector_id, img_path, dm_values_backside, side_backside):
         self.dm_values = dm_values
         self.side = side
         self.datetime = datetime
         self.sector_id = sector_id
         self.img_path = img_path
+        self.dm_values_backside = dm_values_backside
+        self.side_backside = side_backside
 
 
 class SectorCoords:
