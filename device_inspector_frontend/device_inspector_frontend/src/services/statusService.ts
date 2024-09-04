@@ -8,6 +8,15 @@ function getParams(datamatrix: number, newStatus?: string) {
   return params
 }
 
+
+export async function getAllInspectionsStatuses(): Promise<String[]> {
+  const res = await fetch(
+    `${process.env.REACT_APP_API_BASE_URL}/statuses`
+  )
+  const result = (await res.json()) as String[]
+  return result
+}
+
 export async function getStatus(inspectionId: number): Promise<String> {
   const res = await fetch(
     // eslint-disable-next-line @stylistic/max-len
