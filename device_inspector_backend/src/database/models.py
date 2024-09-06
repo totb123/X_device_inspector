@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Table, Boolean,ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -10,6 +10,7 @@ class Sector(Base):
     id = Column(Integer, primary_key=True, index=True)
     step_num = Column(Integer)
     name = Column(String)
+
 
 class Comment(Base):
     __tablename__ = 'comments'
@@ -29,13 +30,20 @@ class Inspection(Base):
     sector_id = Column(Integer, ForeignKey('sectors.id'))
     sector = relationship("Sector")
     status = Column(String)
-    side = Column(String)
+    reading_order = Column(Boolean)
 
 
 class Multiboard(Base):
     __tablename__ = 'multiboards'
     id = Column(Integer, primary_key=True)
     specification_id = Column(Integer, ForeignKey('specifications.id'))
+    specification = relationship("Specification")
+
+
+class DefectType(Base):
+    __tablename__ = 'defects_types'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    defect_name = Column(String, nullable=False)
 
 
 class Board(Base):
@@ -43,6 +51,7 @@ class Board(Base):
     id = Column(Integer, primary_key=True)
     multiboard_id = Column(Integer, ForeignKey('multiboards.id'))
     datamatrix = Column(String)
+    defect_type = Column(ARRAY(Integer))
     side = Column(String)
     multiboard = relationship("Multiboard")
 

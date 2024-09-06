@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Layout, Menu } from 'antd'
 import { useState } from 'react'
-import { 
-  InspectionSearchPage 
+import {
+  InspectionSearchPage
 } from '../features/inspectionsSearch/index'
 import { InspectionsHistoryPage } from '../features/inspectionsHistory'
 import { SettingsPage } from '../features/settings'
@@ -22,15 +22,16 @@ const pages= [{
 },{
   key: '3',
   label: 'Партия',
-},{
+}, {
   key: '4',
-  label: 'Последние инспекции'
-}]
+  label: 'Проверка плат',
+}
+]
 
 export const MainPage = () => {
 
   const [selectedPage, setSelectedPage] = useState(pages[0].key)
-  
+
   const handlePageSelection = (selectedPage: any) => {
     setSelectedPage(selectedPage.key)
   }
@@ -54,7 +55,7 @@ export const MainPage = () => {
   )
 }
 
-const PageSwitchContainer: 
+const PageSwitchContainer:
 React.FC<{selectedPage: string}> = ({selectedPage}) => {
   const pageSwitch = () => {
     switch (selectedPage) {
@@ -66,6 +67,9 @@ React.FC<{selectedPage: string}> = ({selectedPage}) => {
         return <SettingsPage/>
       case pages[3].key:
         return <CurrentPartyPage/>
+      case pages[4].key:
+        return <InspectionsCheckPage/>
+      default:
       case pages[4].key:
         return <LatestInspectionImage/>
       default: 

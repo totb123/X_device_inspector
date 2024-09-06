@@ -14,10 +14,12 @@ const convertStatusString = (
       
     case 'UNCHECKED':
       return InspectionStatus.UNCHECKED
-      
+
     case 'DEFECTIVE':
       return InspectionStatus.DEFECTIVE
-      
+
+    case 'REQUIRE_VERIFICATION':
+      return InspectionStatus.REQUIRE_VERIFICATION
     default:
       break
   }

@@ -4,12 +4,13 @@ import uvicorn as uvicorn
 from fastapi import FastAPI, Query, File, UploadFile, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-import src.database.db as db
 from config import AppConfig
+import src.database.db as db
 import src.schemas as schemas
 from src.schemas import InspectionsFilter
 from src.services.get_all_sectors import get_all_sectors
 from src.services.get_inspections import get_inspections
+from src.services.get_all_inspections_statuses import get_all_inspection_statuses
 from src.services.get_coordinates import get_coordinates
 from src.services.update_inspections import update_inspections
 from src.services.get_image import get_image_from_zip_service
@@ -71,13 +72,15 @@ async def get_all_specifications_endpoint() -> List[schemas.Specification]:
     return db.get_specifications_db()
 
 
-@app.get('/inspections')
+@app.get('/inspections') # заменить party на parties
 async def get_inspections_endpoint(
         sector_ids: List[int] = Query(None),
         multi_board_ids: List[int] = Query(None),
         datamatrices: List[str] = Query(None),
         start_date: datetime | None = None,
         end_date: datetime | None = None,
+        status: List[str] = Query(None),
+        parties: List[str] = Query(None),
         skip: int | None = None,
         limit: int | None = None
 ) -> List[schemas.Inspection]:
@@ -87,20 +90,25 @@ async def get_inspections_endpoint(
         start_date=start_date,
         datamatrices=datamatrices,
         end_date=end_date,
+        status=status,
+        parties=parties,
         skip=skip,
         limit=limit
     )
+    print(sector_ids,parties,start_date,end_date,datamatrices)
     return get_inspections(filters, db.get_inspections_by_criteria(start_date, end_date, multi_board_ids, sector_ids,
-                                                                datamatrices))
+                                                                datamatrices, status, parties))
 
 
 @app.get('/inspections/count')
 async def get_inspections_count(
-    sector_ids: List[int] = Query(None),
+        sector_ids: List[int] = Query(None),
         multi_board_ids: List[int] = Query(None),
         datamatrices: List[str] = Query(None),
         start_date: datetime | None = None,
         end_date: datetime | None = None,
+        status: List[str] = Query(None),
+        parties: List[str] = Query(None),
     ):
     filters = InspectionsFilter(
         sector_ids=sector_ids,
@@ -108,15 +116,17 @@ async def get_inspections_count(
         start_date=start_date,
         datamatrices=datamatrices,
         end_date=end_date,
+        status=status,
+        parties=parties,
     )
     return len(get_inspections(
         filters, db.get_inspections_by_criteria(
-            start_date, end_date, multi_board_ids, sector_ids,datamatrices
+            start_date, end_date, multi_board_ids, sector_ids, datamatrices, status, parties
             )
         ))
 
 @app.get('/boards')
-async def get_boards_by_multiboard(multiboard_id: int): 
+async def get_boards_by_multiboard(multiboard_id: int):
     return db.get_boards_by_multiboard_id(multiboard_id=multiboard_id)
 
 @app.get('/change_coordinates')
@@ -125,9 +135,15 @@ async def change_coordinates_endpoint(sector_id: int, specification_id: int, sid
                        coordinates[4], coordinates[5], coordinates[6], coordinates[7])
     
 
+
 @app.get('/get_coordinates')
 async def get_coordinaes_endpoint(sector_id: int, side: str, specification: int) -> schemas.SectorDMCoordinates: 
     return get_coordinates(sector_id, side, specification)
+
+@app.get('/statuses')
+async def get_all_statuses_endpoint() -> List[str]:
+    return get_all_inspection_statuses()
+
 
 @app.get('/get_status')
 async def get_status_endpoint(inspection_id: int):
@@ -146,13 +162,16 @@ async def change_status_endpoint(inspection_id: str, new_status: str) -> bool:
 async def get_comments_for_boards(inspection_id: str):
     return db.get_comments_by_inspection(int(inspection_id))
 
+
 @app.post('/comment')
 async def add_comment_endpoint(inspection_id: int, comment: schemas.CommentCreate):
     return db.add_comment(inspection_id, comment)
-    
+
+
 @app.post('/upload_image')
 async def upload_file(inspection_id: int, file: UploadFile = File(...)):
     return await update_inspections(image=file, inspection_id=inspection_id)
+
 
 @app.get('/get_image')
 async def get_image(path: str):
@@ -184,7 +203,7 @@ async def get_last_image(sector_id: int, side: str | None = None, specification_
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
     print(file_path)
     if os.path.exists(file_path):
-        with open (file_path, 'rb') as file:
+        with open(file_path, 'rb') as file:
             image = file.read()
         return Response(content=image, media_type='image/jpeg')
     else: 
@@ -203,6 +222,12 @@ async def get_current_party():
 @app.post('/update_current_party')
 async def update_current_party(specification_id: int, side: str):
     return db.update_current_party(specification_id, side)
+
+
+@app.get('/change_controversial_status')
+async def change_controversial_status(inspection_id: str, confirmation_flag: bool):
+
+    return db.change_controversial_data(int(inspection_id), confirmation_flag)
 
 
 if __name__ == '__main__':

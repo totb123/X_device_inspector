@@ -1,7 +1,8 @@
 export enum InspectionStatus {
   UNCHECKED = 'UNCHECKED',
   NORMAL = 'NORMAL',
-  DEFECTIVE = 'DEFECTIVE'
+  DEFECTIVE = 'DEFECTIVE',
+  REQUIRE_VERIFICATION = 'REQUIRE_VERIFICATION'
 }
 
 export type TInspection = {
