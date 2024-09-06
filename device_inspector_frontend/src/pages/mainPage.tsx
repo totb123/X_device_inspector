@@ -8,6 +8,7 @@ import {
 import { InspectionsHistoryPage } from '../features/inspectionsHistory'
 import { SettingsPage } from '../features/settings'
 import { CurrentPartyPage } from '../features/currentParty'
+import LatestInspectionImage from '../features/latestInspectionImage'
 
 const pages= [{
   key: '0',
@@ -21,6 +22,9 @@ const pages= [{
 },{
   key: '3',
   label: 'Партия',
+},{
+  key: '4',
+  label: 'Последние инспекции'
 }]
 
 export const MainPage = () => {
@@ -62,6 +66,8 @@ React.FC<{selectedPage: string}> = ({selectedPage}) => {
         return <SettingsPage/>
       case pages[3].key:
         return <CurrentPartyPage/>
+      case pages[4].key:
+        return <LatestInspectionImage/>
       default: 
         return <InspectionSearchPage/>
     }

@@ -10,7 +10,7 @@ interface SectorBadgeData {
 }
 
 export const SectorBadge: React.FC<SectorBadgeData> = sector => {
-  const [sectors, sectorsStatus] = useSectorGet()
+  const {sectors, sectorsStatus} = useSectorGet()
   return (<div style={{border: 'inherit', borderColor: 'grey'}}>
     {sectorsStatus == 'success' 
       ?  <Text code>{(sectors as TSector[]).find(

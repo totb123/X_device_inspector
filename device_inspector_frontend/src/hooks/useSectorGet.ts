@@ -7,5 +7,5 @@ export const useSectorGet = () => {
     data,
     status
   } = useQuery<TSector[], string>('sectors', getSectors)
-  return [data, status]
+  return {sectors: data, sectorsStatus: status}
 }

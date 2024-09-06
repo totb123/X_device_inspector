@@ -71,8 +71,13 @@ def get_last_inspection(sector_id: int, side: str, multiboard_ids: list[int]) ->
         models.Inspection.side == side.lower(), 
         models.Inspection.sector_id == sector_id,
         models.Inspection.multiboard_id.in_(multiboard_ids),
-    ).all()[-1]
+    ).order_by(models.Inspection.id.desc()).first()
 
+def get_reversed_inspections_by_sector_id(sector_id: int) -> list[models.Inspection]:
+    db = get_connection()
+    return db.query(models.Inspection).filter(
+        models.Inspection.sector_id == sector_id,
+    ).order_by(models.Inspection.id.desc()).all()
 def get_multiboard_ids_by_specification(specification_id: int) -> list[int]: 
     db = get_connection()
     multiboards = db.query(models.Multiboard).filter(

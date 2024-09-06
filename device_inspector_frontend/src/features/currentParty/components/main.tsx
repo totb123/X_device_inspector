@@ -10,7 +10,7 @@ import Title from 'antd/es/typography/Title'
 import updateCurrentPartyHandler from '../hooks/useCurrentPartyHandler'
 
 export function MainPage() {
-  const [specifications, specificationStatus] = useSpecificationsGet()
+  const {specifications, specificationsStatus} = useSpecificationsGet()
   const [currentParty, currentPartyStatus] = useCurrentPartyGet()
   const [specificationId, setSpecificationId] = useState<number>(0)
   const [
@@ -33,15 +33,15 @@ export function MainPage() {
   }
 
   const handleFormSubmit = () => {
-    if (specificationId) {
+    if (specificationId) 
       update(side)
-    }
+    
   }
 
   useEffect(() => {
     if (currentPartyStatus == 'success' 
     && 
-    specificationStatus == 'success' 
+    specificationsStatus == 'success' 
     ) {
       setSpecificationId((currentParty as TCurrentParty).specification_id)
       setSide((currentParty as TCurrentParty).side)
