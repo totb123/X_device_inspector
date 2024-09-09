@@ -1,13 +1,10 @@
 import { useQuery, useQueryClient } from 'react-query'
 import { getLastImage } from '../services/getLastImage'
-import { useEffect, useState } from 'react'
-import { useDebounce } from '../../../hooks/useDebounce'
-import { TSector } from '../../../types/sectorType'
+import { useState } from 'react'
 
 export const useLastImageGet = (
   refetchDelay: number
 ) => {
-  const debounce = useDebounce()
   
   const queryClient = useQueryClient()
 

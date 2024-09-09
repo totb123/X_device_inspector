@@ -43,6 +43,7 @@ React.FC<ImageContextProps> = (
         latestImage: lastImageString,
         selectedSector: selectedSector
       })
+      console.log(lastImageString)
     }
   }, [lastImageStatus, selectedSector])
 

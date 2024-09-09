@@ -1,55 +1,53 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { Space, Button, Image } from 'antd'
 import { useImage } from '../context/latestInspectionImageContext'
-import { useFullScreen } from '../../../hooks/useFullscreen'
+import { FullScreen, useFullScreenHandle } from 'react-full-screen'
 
 export const ImageContainer: React.FC = () => {
-  // eslint-disable-next-line no-undef
-  const ref = useRef<HTMLDivElement>(null)
+  
   const imageContext = useImage()
-  const fullScreen = useFullScreen(ref.current!)
-  const handleFullScreen = async (state?: boolean) => {
-    await fullScreen.toggleFullScreen(state)
-  }
+  const toggleFullScreen = useFullScreenHandle()
+
   const handlePreviousSectorClick = () => {
-    console.log(imageContext.selectedSector)
-    console.log(imageContext.latestImage)
     if(imageContext.selectedSector !== undefined)
       imageContext.updateSector(imageContext.selectedSector -= 1 )
   }
   const handleNextSectorClick = () => {
-    console.log(imageContext.selectedSector)
-    console.log(imageContext.latestImage)
     if(imageContext.selectedSector !== undefined)
       imageContext.updateSector(imageContext.selectedSector += 1 )
   }
-  const handleBackButtonClick = () => {
-    console.log(imageContext.selectedSector)
-    console.log(imageContext.latestImage)
-    handleFullScreen(false).then(_ => 
-      imageContext.updateSector(undefined)
-    )
+  const handleBackButtonClick = async () => {
+    imageContext.updateSector(undefined)
   }
 
-  return (<div ref={ref}>
+  return (<FullScreen handle={toggleFullScreen}>
     <Space>
-      <Button
-        onClick={handleBackButtonClick}
-      >Назад</Button>
+      {
+        toggleFullScreen.active 
+          ? <></>
+          : <Button
+            onClick={handleBackButtonClick}
+          >Назад</Button>
+      }
       <Button
         disabled={imageContext.selectedSector === 1}
         onClick={handlePreviousSectorClick}
       >Предыдущий сектор</Button>
-      <Image src={imageContext.latestImage} />
+      {/* eslint-disable-next-line @stylistic/max-len */}
+      <Image src={`${process.env.REACT_APP_API_BASE_URL}/get_image?path=${imageContext.latestImage}`} />
       <Button
         disabled={imageContext.selectedSector === 4}
         onClick={handleNextSectorClick}
       >Следующий сектор</Button>
-      <Button
-        onClick={() => handleFullScreen(true)}
-      >
-        На весь экран
-      </Button>
+      {
+        toggleFullScreen.active
+          ? <></>
+          : <Button
+            onClick={toggleFullScreen.enter}
+          >
+          На весь экран
+          </Button>
+      }
     </Space>
-  </div>)
+  </FullScreen>)
 }
