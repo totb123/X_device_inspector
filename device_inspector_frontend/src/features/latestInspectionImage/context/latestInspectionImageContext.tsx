@@ -4,6 +4,7 @@ import {
   defaultImageContext
 } from '../types/latestInspectionImageContextType'
 import { useLastImageGet } from '../hooks/useLastImageGet'
+import { useFullScreen } from '../../../hooks/useFullscreen'
 type ImageContextProps = {
   children: React.ReactNode
 }
@@ -22,8 +23,6 @@ React.FC<ImageContextProps> = (
     console.log('updateSector', updatedSector)
     updateSectorId(updatedSector)
   }
-
-  
   const {
     lastImageString, 
     lastImageStatus, 
