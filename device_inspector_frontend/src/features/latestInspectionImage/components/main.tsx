@@ -8,7 +8,7 @@ export const MainPage: React.FC = () => {
   return <div style={{
     display: 'flex', 
     flexDirection: 'column', 
-    width: '35%'
+    height: '100%',
   }}>
     <Title>Последние инспекции</Title>
     <LatestInspectionImageContextProvider>
