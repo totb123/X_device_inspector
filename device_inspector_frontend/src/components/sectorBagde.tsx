@@ -5,11 +5,11 @@ import {TSector} from '../types/sectorType'
 import {useSectorGet} from '../hooks/useSectorGet'
 
 const {Text} = Typography
-interface SectorBadgeData {
+interface SectorBadgeProps {
   sector_id: number
 }
 
-export const SectorBadge: React.FC<SectorBadgeData> = sector => {
+export const SectorBadge: React.FC<SectorBadgeProps> = sector => {
   const {sectors, sectorsStatus} = useSectorGet()
   return (<div style={{border: 'inherit', borderColor: 'grey'}}>
     {sectorsStatus == 'success' 

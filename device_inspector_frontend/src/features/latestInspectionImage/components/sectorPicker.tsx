@@ -18,20 +18,24 @@ export const SectorPicker: React.FC = () => {
   }
   return <Form>
     <Space direction='vertical'>
-      <SectorInput
-        isMultiple={false}
-        allowClear={false}
-        onChange={
-          selectedSector => 
-            setPickedSector(selectedSector)
-        }
-      />
-      <Button
-        disabled={pickedSector === undefined}
-        onClick={handleSubmit}  
-      >
-        Подтвердить
-      </Button>
+      <Form.Item>
+        <SectorInput
+          isMultiple={false}
+          allowClear={false}
+          onChange={
+            selectedSector => 
+              setPickedSector(selectedSector)
+          }
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button
+          disabled={pickedSector === undefined}
+          onClick={handleSubmit}  
+        >
+          Подтвердить
+        </Button>
+      </Form.Item>
     </Space>
   </Form>
 }

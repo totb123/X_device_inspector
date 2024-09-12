@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, theme } from 'antd'
 import { useState } from 'react'
 import { 
   InspectionSearchPage 
@@ -30,7 +30,9 @@ const pages= [{
 export const MainPage = () => {
 
   const [selectedPage, setSelectedPage] = useState(pages[0].key)
-  
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken()
   const handlePageSelection = (selectedPage: any) => {
     setSelectedPage(selectedPage.key)
   }
@@ -46,7 +48,11 @@ export const MainPage = () => {
           onClick={handlePageSelection}
         />
       </Layout.Header>
-      <Layout.Content>
+      <Layout.Content style={{ padding: '0 48px', 
+        minHeight: 280,  
+        backgroundColor: colorBgContainer,
+        borderRadius: borderRadiusLG
+      }}>
         <PageSwitchContainer selectedPage={selectedPage}/>
       </Layout.Content>
     </Layout>

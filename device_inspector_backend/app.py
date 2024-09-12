@@ -196,7 +196,10 @@ async def get_last_image(sector_id: int, side: str | None = None, specification_
     reversed_inspections = db.get_reversed_inspections_by_sector_id(sector_id)
     if side is None or specification_id is None:
         inspection = reversed_inspections[0] 
-        return inspection.url_image
+        return {
+            'image_path': inspection.url_image,
+            'created_at': inspection.time
+            }
     else: 
         multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)
         inspection = db.get_last_inspection(sector_id, side, multiboard_ids)

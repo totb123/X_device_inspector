@@ -1,7 +1,7 @@
-import { TSector } from '../../../types/sectorType'
 
 export type ImageContextType = {
   selectedSector?: number
+  latestImageCreatedAt?: Date
   latestImage?: string
   updateSector: (sector: number | undefined) => void
 }

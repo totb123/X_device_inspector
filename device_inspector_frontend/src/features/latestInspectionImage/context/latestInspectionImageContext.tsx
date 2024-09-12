@@ -4,7 +4,7 @@ import {
   defaultImageContext
 } from '../types/latestInspectionImageContextType'
 import { useLastImageGet } from '../hooks/useLastImageGet'
-import { useFullScreen } from '../../../hooks/useFullscreen'
+
 type ImageContextProps = {
   children: React.ReactNode
 }
@@ -24,9 +24,8 @@ React.FC<ImageContextProps> = (
     updateSectorId(updatedSector)
   }
   const {
-    lastImageString, 
+    lastImage, 
     lastImageStatus, 
-    lastImageUpdatedAt,
     updateSectorId, 
     selectedSector
   } =  useLastImageGet(4000) 
@@ -36,14 +35,13 @@ React.FC<ImageContextProps> = (
   )
 
   useEffect(() => {
-    console.log('refetched')
     if(lastImageStatus === 'success'){ 
       setImage({
         ...image,
-        latestImage: lastImageString,
-        selectedSector: selectedSector
+        latestImage: lastImage?.image_path,
+        selectedSector: selectedSector,
+        latestImageCreatedAt: lastImage?.created_at
       })
-      console.log(lastImageString)
     }
   }, [lastImageStatus, selectedSector])
 

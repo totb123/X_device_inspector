@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from 'react-query'
 import { getLastImage } from '../services/getLastImage'
 import { useState } from 'react'
+import { LatestImageResponseType } from '../types/latestImageResponseType'
 
 export const useLastImageGet = (
   refetchDelay: number
@@ -15,8 +16,8 @@ export const useLastImageGet = (
     setSectorId(updatedSectorId)
   }
 
-  const {data, status, refetch, dataUpdatedAt} = 
-  useQuery<string | undefined, string>(
+  const {data, status, refetch} = 
+  useQuery<LatestImageResponseType | undefined, string>(
     ['lastImage', {id: sectorId}],
     {
       queryFn: () => sectorId === undefined 
@@ -27,9 +28,8 @@ export const useLastImageGet = (
   )
   
   return {
-    lastImageString: data, 
+    lastImage: data, 
     lastImageStatus: status, 
-    lastImageUpdatedAt: dataUpdatedAt,
     selectedSector: sectorId,
     lastImageRefetch: refetch,
     updateSectorId: updateSector,

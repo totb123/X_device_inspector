@@ -18,11 +18,13 @@ export const SearchFilterModal: React.FC = () => {
     setIsModalShown
   ] = useState<boolean>(false)
   return <>
-    <Button onClick={openModal}>
-      <FilterOutlined/>
-      Фильтр
-    </Button>
-
+    
+    <div style={{marginTop: 10, marginBottom: 10}}>
+      <Button onClick={openModal}>
+        <FilterOutlined/>
+        Фильтр
+      </Button>
+    </div>
     <Modal open={isModalShown}
       footer={null}
       onCancel={closeModal}

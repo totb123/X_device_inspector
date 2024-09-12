@@ -40,6 +40,16 @@
       "group": "x-keeper",
       "database": "device_inspector",
       "username": "postgres"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "device_inspector_dev",
+      "group": "x-keeper",
+      "database": "device_inspector_1",
+      "username": "postgres"
     }
   ]
 }
