@@ -204,7 +204,6 @@ async def get_last_image(sector_id: int, side: str | None = None, specification_
         multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)
         inspection = db.get_last_inspection(sector_id, side, multiboard_ids)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
-    print(file_path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             image = file.read()

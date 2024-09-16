@@ -11,7 +11,6 @@ export const useLastImageGet = (
 
   const [sectorId, setSectorId] = useState<number | undefined>()
   const updateSector = (updatedSectorId: number | undefined) => {
-    console.log(updatedSectorId)
     queryClient.invalidateQueries(['lastImage', {id: sectorId}])
     setSectorId(updatedSectorId)
   }

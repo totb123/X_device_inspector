@@ -20,7 +20,6 @@ React.FC<ImageContextProps> = (
   {children}
 ) => {
   const updateSector = (updatedSector: number | undefined) => {
-    console.log('updateSector', updatedSector)
     updateSectorId(updatedSector)
   }
   const {
@@ -44,6 +43,18 @@ React.FC<ImageContextProps> = (
       })
     }
   }, [lastImageStatus, selectedSector])
+
+  useEffect(() => {
+    if (lastImage?.image_path !== image.latestImage) {
+      setImage({
+        ...image,
+        latestImage: lastImage?.image_path,
+        selectedSector: selectedSector,
+        latestImageCreatedAt: lastImage?.created_at
+      })
+    }}, [image, lastImage, selectedSector]
+  )
+  
 
   return (
     <>

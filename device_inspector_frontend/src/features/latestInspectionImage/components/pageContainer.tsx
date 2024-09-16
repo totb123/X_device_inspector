@@ -4,7 +4,6 @@ import {
 } from '../context/latestInspectionImageContext'
 import { SectorPicker } from './sectorPicker'
 import { ImageContainer } from './imageContainer'
-import { Space } from 'antd'
 
 export const PageContainer: React.FC = () => {
   const imageContext = useImage()

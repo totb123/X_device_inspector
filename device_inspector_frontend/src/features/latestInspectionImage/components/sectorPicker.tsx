@@ -1,8 +1,5 @@
-import { Button, Form, Select, Space, Spin } from 'antd'
-import React, { useEffect } from 'react'
-
-import { TSector } from '../../../types/sectorType'
-
+import { Button, Form, Space } from 'antd'
+import React from 'react'
 import { 
   useImage, 
 } from '../context/latestInspectionImageContext'

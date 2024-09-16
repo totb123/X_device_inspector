@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Space, Button, Image } from 'antd'
 import { useImage } from '../context/latestInspectionImageContext'
 import { FullScreen, useFullScreenHandle } from 'react-full-screen'
@@ -9,11 +9,17 @@ export const ImageContainer: React.FC = () => {
   
   const imageContext = useImage()
   const toggleFullScreen = useFullScreenHandle()
+  const [image, setImage] = React.useState<string | undefined>(undefined)
   const normalizeTime = (time: Date) => {
-    console.log(typeof time)
     // eslint-disable-next-line @stylistic/max-len
     return `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} ${time.getDate()}-${time.getMonth()}-${time.getFullYear()} `
   }
+
+  const generateImageURL = () => {
+  // eslint-disable-next-line @stylistic/max-len
+    return `${process.env.REACT_APP_API_BASE_URL}/get_image?path=${image}`
+  }
+
   const handlePreviousSectorClick = () => {
     if(imageContext.selectedSector !== undefined)
       imageContext.updateSector(imageContext.selectedSector -= 1 )
@@ -25,7 +31,14 @@ export const ImageContainer: React.FC = () => {
   const handleBackButtonClick = async () => {
     imageContext.updateSector(undefined)
   }
-
+  useEffect(() => {
+    if (imageContext.latestImage !== image) 
+      setImage(imageContext.latestImage ?? '')
+  }, [
+    imageContext.latestImage, 
+    setImage, 
+    image, 
+  ])
   return (
     <div style={{
       display: 'inline-block',
@@ -53,22 +66,25 @@ export const ImageContainer: React.FC = () => {
           }}>
             <Space direction='vertical'>
               <Space>
-                <Button
-                  style={{backgroundColor: 'white'}}
-                  type='link'
-                  shape='circle'
-                  icon={<LeftOutlined/>}
-                  disabled={imageContext.selectedSector === 1}
-                  onClick={handlePreviousSectorClick}
-                />
-                <Button
-                  style={{backgroundColor: 'white'}}
-                  type='link'
-                  shape='circle'
-                  icon={<RightOutlined/>}
-                  disabled={imageContext.selectedSector === 4}
-                  onClick={handleNextSectorClick}
-                />
+                {!toggleFullScreen.active && <>
+                  <Button
+                    style={{backgroundColor: 'white'}}
+                    type='link'
+                    shape='circle'
+                    icon={<LeftOutlined/>}
+                    disabled={imageContext.selectedSector === 1}
+                    onClick={handlePreviousSectorClick}
+                  />
+                  <Button
+                    style={{backgroundColor: 'white'}}
+                    type='link'
+                    shape='circle'
+                    icon={<RightOutlined/>}
+                    disabled={imageContext.selectedSector === 4}
+                    onClick={handleNextSectorClick}
+                  />
+                </>
+                }
                 {
                   toggleFullScreen.active
                     ? <div style={{
@@ -117,6 +133,7 @@ export const ImageContainer: React.FC = () => {
             </Space>
           </div>
           <Image
+            key={imageContext.latestImage}
             style={{
               position: 'sticky',
               zIndex: 1,
@@ -124,9 +141,37 @@ export const ImageContainer: React.FC = () => {
             }}
             width={toggleFullScreen.active ? '100%' : '60%'}
             // eslint-disable-next-line @stylistic/max-len
-            src={`${process.env.REACT_APP_API_BASE_URL}/get_image?path=${imageContext.latestImage}`} 
+            src={generateImageURL()} 
             preview={false}
           />
+          {toggleFullScreen.active && 
+            <div style={{
+              width: '100%',
+              display: 'flex',
+              position: 'fixed',
+              top: '50%',
+              zIndex: 3,
+              flexDirection: 'row',
+              justifyContent: 'space-between'
+            }}>
+              <Button
+                style={{backgroundColor: 'white'}}
+                type='link'
+                shape='circle'
+                icon={<LeftOutlined/>}
+                disabled={imageContext.selectedSector === 1}
+                onClick={handlePreviousSectorClick}
+              />
+              <Button
+                style={{backgroundColor: 'white'}}
+                type='link'
+                shape='circle'
+                icon={<RightOutlined/>}
+                disabled={imageContext.selectedSector === 4}
+                onClick={handleNextSectorClick}
+              />
+            </div>
+          }
         </div>
       </FullScreen>
     </div>)
