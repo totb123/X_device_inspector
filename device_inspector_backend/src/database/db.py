@@ -8,7 +8,7 @@ from src import schemas
 import os
 
 SQLALCHEMY_DATABASE_URL = os.environ.get('DATABASE_URL',
-                                         'postgresql://postgres:12345@localhost:5432/device_inspector_1')
+                                         'postgresql://postgres:postgres@localhost:5432/device_inspector_1')
 
 
 def get_boards_by_multiboard_id(multiboard_id):
@@ -86,14 +86,21 @@ def get_last_inspection(sector_id: int, side: str, multiboard_ids: list[int]) ->
         models.Inspection.side == side.lower(), 
         models.Inspection.sector_id == sector_id,
         models.Inspection.multiboard_id.in_(multiboard_ids),
-    ).all()[-1]
+    ).order_by(models.Inspection.id.desc()).first()
 
-
+def get_reversed_inspections_by_sector_id(sector_id: int) -> list[models.Inspection]:
+    db = get_connection()
+    inspections = db.query(models.Inspection).filter(
+        models.Inspection.sector_id == sector_id,
+    ).order_by(models.Inspection.id.desc()).all()
+    db.close()
+    return inspections
 def get_multiboard_ids_by_specification(specification_id: int) -> list[int]: 
     db = get_connection()
     multiboards = db.query(models.Multiboard).filter(
         models.Multiboard.specification_id == specification_id,
     ).all()
+    db.close()
     return list(map(lambda multiboard: multiboard.id, multiboards))
 
 
