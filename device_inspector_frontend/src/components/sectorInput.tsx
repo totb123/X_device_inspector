@@ -14,13 +14,13 @@ type SectorInputProps = {
 export const SectorInput: React.FC<SectorInputProps> = ({
   onChange, isMultiple = true, allowClear = true, defaultValue
 }) => {
-  const [sectors, sectorStatus] = useSectorGet()
+  const {sectors, sectorsStatus} = useSectorGet()
   return <div style={{ width: '200px' }}>
-    {sectorStatus == 'success' ?
+    {sectorsStatus == 'success' ?
       <Select mode={isMultiple ? 'multiple' : undefined}
         allowClear={allowClear}
         defaultValue={defaultValue}
-        disabled={sectorStatus !== 'success'}
+        disabled={sectorsStatus != 'success'}
         onChange={onChange}
         options={mapSectorIds(sectors as TSector[])} />
       : <Spin />}

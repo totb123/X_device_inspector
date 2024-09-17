@@ -9,5 +9,5 @@ export const useSpecificationsGet = () => {
   } = useQuery<TSpecification[], string>(
     'specifications', getSpecifications
   )
-  return [data, status]
+  return {specifications: data, specificationsStatus: status}
 }

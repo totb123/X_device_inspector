@@ -1,3 +1,4 @@
 .DS_Store
 device_inspector_frontend/node_modules
 *pyc
+notes/**

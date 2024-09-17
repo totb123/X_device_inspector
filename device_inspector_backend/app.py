@@ -191,9 +191,18 @@ async def get_minio_image(path: str):
     
 
 @app.get('/get_last_image')
-async def get_last_image(sector_id: int, side: str, specification_id: int):
-    multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)
-    inspection = db.get_last_inspection(sector_id, side, multiboard_ids)
+async def get_last_image(sector_id: int, side: str | None = None, specification_id: int | None = None):
+    # todo: знаю, что решение далеко не лучшее, пока что ничего не пришло в голову
+    reversed_inspections = db.get_reversed_inspections_by_sector_id(sector_id)
+    if side is None or specification_id is None:
+        inspection = reversed_inspections[0] 
+        return {
+            'image_path': inspection.url_image,
+            'created_at': inspection.time
+            }
+    else: 
+        multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)
+        inspection = db.get_last_inspection(sector_id, side, multiboard_ids)
     file_path = f"{os.environ.get('FILE_PATH', './static')}/{inspection.url_image}"
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:

@@ -14,6 +14,7 @@ const SearchFilterUpdateContext
   = React.createContext((updates: Partial<SearchFilterContextType>) => {
   })
 
+
 export function useFilter() {
   return useContext(SearchFilterContext)
 }

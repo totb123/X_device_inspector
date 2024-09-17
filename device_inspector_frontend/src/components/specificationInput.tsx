@@ -14,13 +14,13 @@ type SpecificationInputProps = {
 export const SpecificationInput: React.FC<SpecificationInputProps> = ({
   onChange, isMultiple = true, allowClear = true, defaultValue
 }) => {
-  const [specifications, specificationStatus] = useSpecificationsGet()
+  const {specifications, specificationsStatus} = useSpecificationsGet()
   return <div style={{ width: '200px' }}>
-    {specificationStatus == 'success' ?
+    {specificationsStatus == 'success' ?
       <Select mode={isMultiple ? 'multiple' : undefined}
         allowClear={allowClear}
         defaultValue={defaultValue}
-        disabled={specificationStatus != 'success'}
+        disabled={specificationsStatus != 'success'}
         onChange={onChange}
         options={
           mapSpecificationIds(

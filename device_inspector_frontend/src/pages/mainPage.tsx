@@ -1,14 +1,14 @@
 import React from 'react'
 
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, theme } from 'antd'
 import { useState } from 'react'
-import {
-  InspectionSearchPage
+import { 
+  InspectionSearchPage 
 } from '../features/inspectionsSearch/index'
 import { InspectionsHistoryPage } from '../features/inspectionsHistory'
 import { SettingsPage } from '../features/settings'
 import { CurrentPartyPage } from '../features/currentParty'
-import { InspectionsCheckPage } from '../features/inspectionsCheck'
+import LatestInspectionImage from '../features/latestInspectionImage'
 
 const pages= [{
   key: '0',
@@ -22,16 +22,17 @@ const pages= [{
 },{
   key: '3',
   label: 'Партия',
-}, {
+},{
   key: '4',
-  label: 'Проверка плат',
-}
-]
+  label: 'Последние инспекции'
+}]
 
 export const MainPage = () => {
 
   const [selectedPage, setSelectedPage] = useState(pages[0].key)
-
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken()
   const handlePageSelection = (selectedPage: any) => {
     setSelectedPage(selectedPage.key)
   }
@@ -47,7 +48,11 @@ export const MainPage = () => {
           onClick={handlePageSelection}
         />
       </Layout.Header>
-      <Layout.Content>
+      <Layout.Content style={{ padding: '0 48px', 
+        minHeight: 280,  
+        backgroundColor: colorBgContainer,
+        borderRadius: borderRadiusLG
+      }}>
         <PageSwitchContainer selectedPage={selectedPage}/>
       </Layout.Content>
     </Layout>
@@ -55,7 +60,7 @@ export const MainPage = () => {
   )
 }
 
-const PageSwitchContainer:
+const PageSwitchContainer: 
 React.FC<{selectedPage: string}> = ({selectedPage}) => {
   const pageSwitch = () => {
     switch (selectedPage) {
@@ -68,8 +73,8 @@ React.FC<{selectedPage: string}> = ({selectedPage}) => {
       case pages[3].key:
         return <CurrentPartyPage/>
       case pages[4].key:
-        return <InspectionsCheckPage/>
-      default:
+        return <LatestInspectionImage/>
+      default: 
         return <InspectionSearchPage/>
     }
   }

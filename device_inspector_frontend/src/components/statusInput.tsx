@@ -1,4 +1,4 @@
-export {}; // Это делает файл модулем
+export {} // Это делает файл модулем
 // import { Select, Spin } from 'antd';
 // import { useSectorGet } from '../hooks/useSectorGet';
 // import React from 'react';
