@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import ReactLassoSelect, { getCanvas } from 'react-lasso-select'
-import { Point } from 'react-lasso-select/lib/helpers';
+import { Point } from 'react-lasso-select/lib/helpers'
 
 interface TProps {
   path: string
@@ -57,9 +57,9 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
   }
 
   useEffect(() => {
-    if (props.initCoordinates) {
+    if (props.initCoordinates) 
       setInitialCoordinates(props.initCoordinates)
-    }
+    
   }, [props.initCoordinates])
 
   return (
@@ -70,15 +70,15 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
         src={props.path}
         imageStyle={{ width: '1000px', height: '500px'}}
         onChange={(path: Point[]) => {
-          if (path.length == 4) {
+          if (path.length == 4) 
             changeInputFormValues(path)
-          }
+          
         }}
         onComplete={(path: Point[]) => {
           getCanvas(props.path, path, (err, canvas) => {
-            if (!err) {
+            if (!err) 
               setClippedImg(canvas.toDataURL());
-            }
+            
           })
         }}
       />

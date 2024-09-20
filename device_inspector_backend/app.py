@@ -19,6 +19,7 @@ import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+from fastapi import Response
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
@@ -138,7 +139,14 @@ async def change_coordinates_endpoint(sector_id: int, specification_id: int, sid
 
 @app.get('/get_coordinates')
 async def get_coordinaes_endpoint(sector_id: int, side: str, specification: int) -> schemas.SectorDMCoordinates: 
-    return get_coordinates(sector_id, side, specification)
+    coordinates = get_coordinates(sector_id, side, specification)
+    if coordinates is None:
+        return Response(
+            content="No coordinates for this sector, side and specification", 
+            media_type="text/plain", 
+            status_code=404
+        )
+    return coordinates
 
 @app.get('/statuses')
 async def get_all_statuses_endpoint() -> List[str]:
