@@ -84,7 +84,7 @@ CoordinatesSearchFormProps> = ({
           loading={fetchStatus === 'loading'}
           disabled={fetchStatus === 'loading' || !areFieldsEmpty()}
         >
-         Сохранить
+         Поиск
         </Button>
       </Form.Item>
     </Form>

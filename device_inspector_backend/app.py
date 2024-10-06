@@ -217,7 +217,7 @@ async def get_last_image(sector_id: int, side: str | None = None, specification_
             image = file.read()
         return Response(content=image, media_type='image/jpeg')
     else: 
-        return {'error': 'File not found'}
+        return Response(content='File not found', status_code=404)
     
 @app.post('/edit_dms')
 async def edit_dms(dto: schemas.EditDMsInput):

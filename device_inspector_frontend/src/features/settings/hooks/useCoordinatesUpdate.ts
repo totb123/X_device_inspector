@@ -5,46 +5,43 @@ import {
   updateCoordinates 
 } from '../services/coordinatesService'
 import { useEffect, useState } from 'react'
-import { 
-  TCoordinatesSearchFormInput
-} from '../types/coordinatesSearchFormInput'
+import { TSettings } from '../types/settingsType'
 
 
 export const useCoordinatesUpdate = (
-  coordinatesSearchFormInput: TCoordinatesSearchFormInput,
-  initialCoordinates: string[]
 ) => {
   const [
-    coordinates, setCoordinates
-  ] = useState<string[]>(initialCoordinates)
+    settings, 
+    setSettings
+  ] = useState<TSettings>()
 
-  const setNewCoordinates = (coordinates: string[]) => {
-    setCoordinates(coordinates)
+
+  const setSettingsField = (
+    newSettings: Partial<TSettings>
+  ) => {
+    setSettings(prevState => ({
+      ...prevState, 
+      ...newSettings
+    } as TSettings))
   }
 
   const mutation = useMutation(
-    async (
-      coordinates: string[]
-    ) => await updateCoordinates(
-      {
-        sectorId: coordinatesSearchFormInput.sectorId, 
-        side: coordinatesSearchFormInput.side, 
-        specificationId: coordinatesSearchFormInput.specificationId, 
-        coordinates: coordinates
-      } 
-    ), {
-      
+    async (settings: TSettings) => {
+      return await updateCoordinates(
+        settings
+      )
+    }, {    
     }
   )
   
   useEffect(() => {
-    if (!mutation.isLoading) 
-      mutation.mutate(coordinates)
-  }, [coordinates, mutation])
+    if ( settings !== undefined && !mutation.isLoading) 
+      mutation.mutate(settings)
+  }, [settings])
 
   
   return {
+    setSettings: setSettingsField,
     updateStatus: mutation.status,
-    updateCoordinates: setNewCoordinates,
   }
 }

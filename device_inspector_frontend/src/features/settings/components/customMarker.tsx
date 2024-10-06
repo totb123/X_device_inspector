@@ -77,7 +77,7 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
         onComplete={(path: Point[]) => {
           getCanvas(props.path, path, (err, canvas) => {
             if (!err) 
-              setClippedImg(canvas.toDataURL());
+              setClippedImg(canvas.toDataURL())
             
           })
         }}

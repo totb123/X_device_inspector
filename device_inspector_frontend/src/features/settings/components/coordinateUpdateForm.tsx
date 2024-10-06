@@ -1,67 +1,118 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { SimpleCoordinateInput } from './coordinateInput'
+import { Alert, Button, Col, Form, Row, Space } from 'antd'
+import { MapperImage } from './customMarker'
+import { 
+  TCoordinatesSearchFormInput 
+} from '../types/coordinatesSearchFormInput'
+import { useImageGet } from '../hooks/useImageGet'
+import { generateImagePath } from '../utils/generateImagePath'
 
-export const CoordinateUpdateForm: React.FC = () => {
+
+type CoordinateUpdateFormProps = {
+  initialCoordinates: string[]
+  searchFormFields: TCoordinatesSearchFormInput
+  onSubmit: (coordinates: string[]) => void
+}
+
+export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
+  {
+    initialCoordinates,
+    onSubmit,
+    searchFormFields,
+  }
+) => {  
+  const [
+    coordinates, 
+    setCoordinates
+  ] = useState<string[]>(initialCoordinates)
+
+  const [
+    markerInitCoordinates, 
+    setMarkerInitCoordinates
+  ] = useState<string | undefined>(undefined)
+ 
+
+  const {isImageAvailable} = useImageGet(
+    generateImagePath(searchFormFields)
+  )
+
+  const [
+    currentBoardIndex, 
+    setCurrentBoardIndex
+  ] = useState<number | undefined>(undefined)
+
+  const handleCoordinateChange = (value: string, index: number) => {
+    setCoordinates(() => {
+      const updatedCoordinatesWithNewValue = [...coordinates]
+      updatedCoordinatesWithNewValue[index] = value
+      return updatedCoordinatesWithNewValue
+    })
+  } 
+
+  const showMarker = (index: number, value: string) => {
+    setCurrentBoardIndex(index)
+    setMarkerInitCoordinates(value)
+  }
+
+ 
   return (
     <>
-      {/* <Space.Compact direction="vertical">
-        {updatedCoordinates !== undefined ? (
-          <div>
-            <Row gutter={[16, 16]}>
-              // eslint-disable-next-line @stylistic/max-len
-              {Array.from({ length: 4 }).map((value, index) => (
-                <Form.Item
-                  label={`Координаты ${index + 1} платы`}
-                  validateDebounce={1000}
-                  rules={[{ required: true }]}
-                >
-                  <Col className="gutter-row" span={20}>
-                    <Input
-                      value={updatedCoordinates[index]}
-                      onChange={value =>
-                        handleCoordinateChange(index, value.target.value)
-                      }
-                    />
-                    <Button
-                      onClick={() =>
-                        showMarker(index, updatedCoordinates[index])
-                      }
-                    >
-                      Посмотреть
-                    </Button>
-                  </Col>
-                </Form.Item>
-              ))}
-            </Row>
-            <Row gutter={[16, 16]}>
-              {Array.from({ length: 4 }).map((value, index) => (
-                <Form.Item
-                  label={`Координаты ${index + 5} платы`}
-                  validateDebounce={1000}
-                  rules={[{ required: true }]}
-                >
-                  <Col className="gutter-row" span={20}>
-                    <Input
-                      value={updatedCoordinates[index + 4]}
-                      onChange={value =>
-                        handleCoordinateChange(index + 4, value.target.value)
-                      }
-                    />
-                    <Button
-                      onClick={() =>
-                        showMarker(index + 4, updatedCoordinates[index + 4])
-                      }
-                    >
-                      Посмотреть
-                    </Button>
-                  </Col>
-                </Form.Item>
-              ))}
-            </Row>
-          </div>
-        ) : 
-          <></>
-        }
-      </Space.Compact> */}
+      <Form>
+        <Space direction='vertical'>
+          <Row gutter={[16, 16]}>
+            { coordinates
+              .slice(0, coordinates.length / 2)
+              .map((coordinate, index) => 
+                <Col key={`coordinate_${index}`}>
+                  <SimpleCoordinateInput 
+                    initialState={coordinate} 
+                    onChange={value => 
+                      handleCoordinateChange(value, index)}
+                  />
+                  <Button onClick={() => showMarker(index, coordinate)}>
+                    Показать
+                  </Button>
+                </Col>
+              )
+            }
+          </Row>
+          <Row gutter={[16, 16]}>
+            { coordinates
+              .slice(coordinates.length / 2)
+              .map((coordinate, index) => 
+                <Col key={`coordinate_${index}`}>
+                  <SimpleCoordinateInput 
+                    initialState={coordinate} 
+                    onChange={value => 
+                      handleCoordinateChange(value, index)}
+                  />
+                  <Button onClick={() => showMarker(index, coordinate)}>
+                    Показать
+                  </Button>
+                </Col>
+              )
+            }
+          </Row>
+        </Space>
+        <Button onClick={() => onSubmit(coordinates)}>Сохранить</Button>
+      </Form>
+      {isImageAvailable === true
+        ?
+        <MapperImage
+          path={generateImagePath(searchFormFields)} 
+          initCoordinates={coordinates.join(',')}
+          handleCoordinateChange={handleCoordinateChange}
+          boardIndex={currentBoardIndex} />
+        :
+        <Alert 
+          // eslint-disable-next-line @stylistic/max-len
+          message={`Произошла ошибка. Нет данных о координатах датаматрикс кодов по предоставленным данным`}
+          type="error" 
+        />
+      }
     </>
-  )
+  ) 
 }
+
+
