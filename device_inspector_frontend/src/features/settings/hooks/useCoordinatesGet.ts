@@ -16,6 +16,10 @@ export const useCoordinatesGet = () => {
     coordinatesSearchFormInput, 
     setCoordinatesSearchFormInput
   ] = useState<Partial<TCoordinatesSearchFormInput>>({})
+
+  const [
+    statusCode, setStatusCode
+  ] = useState<number>()
   const updateFormValues = (
     formData : Partial<TCoordinatesSearchFormInput>
   ) => {
@@ -35,7 +39,7 @@ export const useCoordinatesGet = () => {
   }
   
   const {data, status, refetch} = useQuery<
-  TCoordinatesSearchResponse, Error
+  TCoordinatesSearchResponse| undefined, Error
   >(
     ['coordinates', coordinatesSearchFormInput],
     {
@@ -43,20 +47,24 @@ export const useCoordinatesGet = () => {
       refetchOnWindowFocus: false,
       refetchInterval: false, 
       refetchOnMount: false,
-      queryFn: () => {
+      queryFn: async () => {
         if (!validateCoordinatesFormInput(coordinatesSearchFormInput)) 
           throw new Error('Invalid fields')
         
-        return getCoordinates(
+        const response = await getCoordinates(
           coordinatesSearchFormInput as TCoordinatesSearchFormInput
         ).then(response => response)
+        setStatusCode(response.status)
+        return response.response
       }
+      
     }
   )
   return {
     getCoordinates: data,
     searchValues: coordinatesSearchFormInput,
     getStatus: status,
+    fetchStatusCode: statusCode,
     getRefetch: refetch,
     updateFormValues
   }

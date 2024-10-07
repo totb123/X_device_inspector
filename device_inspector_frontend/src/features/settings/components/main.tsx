@@ -1,7 +1,7 @@
 /* eslint-disable @stylistic/max-len */
 /* eslint-disable react/jsx-key */
 
-import {Collapse, CollapseProps } from 'antd'
+import {Alert, Button, Collapse, CollapseProps } from 'antd'
 import Title from 'antd/es/typography/Title'
 import React from 'react'
 
@@ -24,6 +24,7 @@ export const MainPage: React.FC = () => {
     getCoordinates,
     getStatus,
     searchValues,
+    fetchStatusCode,
     updateFormValues
   } = useCoordinatesGet()
   const handleSearchFormSubmit = (formInput: TCoordinatesSearchFormInput) => {
@@ -61,12 +62,19 @@ export const MainPage: React.FC = () => {
     />    
     <div style={{margin: '10px 0'}}>
       {
-        getCoordinates &&
-      <CoordinatesUpdateForm 
-        searchFormFields={searchValues as TCoordinatesSearchFormInput}
-        onSubmit={handleUpdateFormSubmit}
-        initialCoordinates={getCoordinates.coordinates}
-      />
+        getCoordinates && fetchStatusCode === 200 &&
+          <CoordinatesUpdateForm 
+            searchFormFields={searchValues as TCoordinatesSearchFormInput}
+            onSubmit={handleUpdateFormSubmit}
+            initialCoordinates={getCoordinates.coordinates}
+          />
+      }
+      { fetchStatusCode === 404 && <Alert type='warning' message={
+        <>
+          Пожалуйста, Отсутствуют координаты по предоставленным данным
+          <Button>Добавить</Button>
+        </>
+      }/>
       }
       
     </div>

@@ -29,13 +29,23 @@ const generateUpdateParams = (settings: TSettings) => {
 
 export const getCoordinates = async (
   coordinatesSearchData: TCoordinatesSearchFormInput
-): Promise<TCoordinatesSearchResponse> => {
+): Promise<{
+  status: number, 
+  response: TCoordinatesSearchResponse | undefined
+}> => {
   const res = await fetch(
     // eslint-disable-next-line @stylistic/max-len
     `${process.env.REACT_APP_API_BASE_URL}/get_coordinates?${generateGetParams(coordinatesSearchData)}`
   )
-  console.log(res)
-  return await res.json()
+  if (res.status === 404) 
+  {return {
+    status: 404,
+    response: undefined
+  }}
+  return {
+    status: 200,
+    response: await res.json()
+  }
 }
 
 export const updateCoordinates = async (
