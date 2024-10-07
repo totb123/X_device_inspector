@@ -7,6 +7,7 @@ import {
 } from '../types/coordinatesSearchFormInput'
 import { useImageGet } from '../hooks/useImageGet'
 import { generateImagePath } from '../utils/generateImagePath'
+import Title from 'antd/es/typography/Title'
 
 
 type CoordinateUpdateFormProps = {
@@ -59,43 +60,46 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
   return (
     <>
       <Form>
+        <Title level={3}>Координаты</Title>
         <Space direction='vertical'>
-          <Row gutter={[16, 16]}>
-            { coordinates
-              .slice(0, coordinates.length / 2)
-              .map((coordinate, index) => 
-                <Col key={`coordinate_${index}`}>
-                  <SimpleCoordinateInput 
-                    initialState={coordinate} 
-                    onChange={value => 
-                      handleCoordinateChange(value, index)}
-                  />
-                  <Button onClick={() => showMarker(index, coordinate)}>
-                    Показать
-                  </Button>
-                </Col>
-              )
-            }
-          </Row>
-          <Row gutter={[16, 16]}>
-            { coordinates
-              .slice(coordinates.length / 2)
-              .map((coordinate, index) => 
-                <Col key={`coordinate_${index}`}>
-                  <SimpleCoordinateInput 
-                    initialState={coordinate} 
-                    onChange={value => 
-                      handleCoordinateChange(value, index)}
-                  />
-                  <Button onClick={() => showMarker(index, coordinate)}>
-                    Показать
-                  </Button>
-                </Col>
-              )
-            }
-          </Row>
+          <Space direction='vertical'>
+            <Row gutter={[16, 16]}>
+              { initialCoordinates
+                .slice(0, coordinates.length / 2)
+                .map((coordinate, index) => 
+                  <Col key={`coordinate_${index}`}>
+                    <SimpleCoordinateInput 
+                      initialState={coordinate} 
+                      onChange={value => 
+                        handleCoordinateChange(value, index)}
+                    />
+                    <Button onClick={() => showMarker(index, coordinate)}>
+                      Показать
+                    </Button>
+                  </Col>
+                )
+              }
+            </Row>
+            <Row gutter={[16, 16]}>
+              { coordinates
+                .slice(coordinates.length / 2)
+                .map((coordinate, index) => 
+                  <Col key={`coordinate_${index}`}>
+                    <SimpleCoordinateInput 
+                      initialState={coordinate} 
+                      onChange={value => 
+                        handleCoordinateChange(value, index)}
+                    />
+                    <Button onClick={() => showMarker(index, coordinate)}>
+                      Показать
+                    </Button>
+                  </Col>
+                )
+              }
+            </Row>
+          </Space>
+          <Button onClick={() => onSubmit(coordinates)}>Сохранить</Button>
         </Space>
-        <Button onClick={() => onSubmit(coordinates)}>Сохранить</Button>
       </Form>
       {isImageAvailable === true
         ?

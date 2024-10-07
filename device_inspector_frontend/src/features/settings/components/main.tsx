@@ -3,7 +3,7 @@
 
 import {Alert, Button, Collapse, CollapseProps } from 'antd'
 import Title from 'antd/es/typography/Title'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 
 import { CoordinatesSearchForm } from './coordinatesSearchForm'
@@ -17,7 +17,8 @@ import { useCoordinatesUpdate } from '../hooks/useCoordinatesUpdate'
 export const MainPage: React.FC = () => {
 
   const {
-    setSettings
+    setSettings,
+    updateStatus
   } = useCoordinatesUpdate()
   
   const {
@@ -25,7 +26,8 @@ export const MainPage: React.FC = () => {
     getStatus,
     searchValues,
     fetchStatusCode,
-    updateFormValues
+    updateFormValues,
+    getRefetch
   } = useCoordinatesGet()
   const handleSearchFormSubmit = (formInput: TCoordinatesSearchFormInput) => {
     updateFormValues(formInput)
@@ -41,6 +43,12 @@ export const MainPage: React.FC = () => {
       coordinates: coordinates
     })
   }
+
+  useEffect(() => {
+    if (updateStatus === 'success') 
+      getRefetch()
+    
+  }, [updateStatus])
 
 
   const items: CollapseProps['items'] = [
@@ -71,7 +79,7 @@ export const MainPage: React.FC = () => {
       }
       { fetchStatusCode === 404 && <Alert type='warning' message={
         <>
-          Пожалуйста, Отсутствуют координаты по предоставленным данным
+          Отсутствуют координаты по предоставленным данным
           <Button>Добавить</Button>
         </>
       }/>
