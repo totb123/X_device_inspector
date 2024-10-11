@@ -4,12 +4,14 @@ import React, { useState } from 'react'
 
 type CoordinateInputProps = {
   initialState: string
+  currentValue: string | undefined
   onChange: (value: string) => void
 }
 
 export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
   initialState, 
-  onChange
+  onChange,
+  currentValue
 }) => {
   const [
     coordinateString, 
@@ -32,7 +34,7 @@ export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
     <Input 
       onChange={value =>handleInputChange(value.target.value)}
       value={
-        coordinateString
+        currentValue !== undefined ? currentValue : coordinateString
       }/>
     {initialState !== coordinateString && 
       <span style={{color: 'gray', fontSize: '0.8rem'}}>

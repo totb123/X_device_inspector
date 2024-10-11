@@ -70,6 +70,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
                   <Col key={`coordinate_${index}`}>
                     <SimpleCoordinateInput 
                       initialState={coordinate} 
+                      currentValue={coordinates[index]}
                       onChange={value => 
                         handleCoordinateChange(value, index)}
                     />
@@ -82,15 +83,24 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
             </Row>
             <Row gutter={[16, 16]}>
               { coordinates
-                .slice(coordinates.length / 2)
+                .slice(coordinates.length / 2, coordinates.length)
                 .map((coordinate, index) => 
                   <Col key={`coordinate_${index}`}>
                     <SimpleCoordinateInput 
+                      currentValue={
+                        coordinate
+                      }
                       initialState={coordinate} 
                       onChange={value => 
-                        handleCoordinateChange(value, index)}
+                        handleCoordinateChange(
+                          value, 
+                          index + coordinates.length / 2
+                        )
+                      }
                     />
-                    <Button onClick={() => showMarker(index, coordinate)}>
+                    <Button onClick={() => showMarker(
+                      index + coordinates.length / 2, 
+                      coordinate)}>
                       Показать
                     </Button>
                   </Col>
@@ -105,7 +115,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
         ?
         <MapperImage
           path={generateImagePath(searchFormFields)} 
-          initCoordinates={coordinates.join(',')}
+          initCoordinates={markerInitCoordinates}
           handleCoordinateChange={handleCoordinateChange}
           boardIndex={currentBoardIndex} />
         :
