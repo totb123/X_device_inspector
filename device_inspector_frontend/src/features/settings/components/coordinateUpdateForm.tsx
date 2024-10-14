@@ -35,6 +35,11 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
     setMarkerInitCoordinates
   ] = useState<string | undefined>(undefined)
  
+  const [
+    validationResult, 
+    setValidationResult
+  ] = useState<boolean>(true)
+
 
   const {isImageAvailable} = useImageGet(
     generateImagePath(searchFormFields)
@@ -46,8 +51,6 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
   ] = useState<number | undefined>(undefined)
 
   const handleCoordinateChange = (value: string, index: number) => {
-    console.log(value, coordinates)
-    console.log(initialCoordinates)
     setCoordinates(() => {
       const updatedCoordinatesWithNewValue = [...coordinates]
       updatedCoordinatesWithNewValue[index] = value
@@ -77,6 +80,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
                       currentValue={coordinate}
                       onChange={value => 
                         handleCoordinateChange(value, index)}
+                      setValidationResult={setValidationResult}
                     />
                     <Button onClick={() => showMarker(index, coordinate)}>
                       Показать
@@ -104,6 +108,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
                           index + coordinates.length / 2
                         )
                       }
+                      setValidationResult={setValidationResult}
                     />
                     <Button onClick={() => showMarker(
                       index + coordinates.length / 2, 
@@ -115,7 +120,10 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
               }
             </Row>
           </Space>
-          <Button onClick={() => onSubmit(coordinates)}>Сохранить</Button>
+          <Button 
+            disabled={validationResult === false}
+            onClick={() => onSubmit(coordinates)}
+          >Сохранить</Button>
         </Space>
       </Form>
       {isImageAvailable === true

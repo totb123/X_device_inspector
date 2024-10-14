@@ -3,7 +3,7 @@
 
 import {Alert, Button, Collapse, CollapseProps } from 'antd'
 import Title from 'antd/es/typography/Title'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import { CoordinatesSearchForm } from './coordinatesSearchForm'
