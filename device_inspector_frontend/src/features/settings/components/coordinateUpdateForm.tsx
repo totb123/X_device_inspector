@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/max-len */
 import React, { useState } from 'react'
 import { SimpleCoordinateInput } from './coordinateInput'
 import { Alert, Button, Col, Form, Row, Space } from 'antd'
@@ -23,6 +24,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
     searchFormFields,
   }
 ) => {  
+
   const [
     coordinates, 
     setCoordinates
@@ -44,6 +46,8 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
   ] = useState<number | undefined>(undefined)
 
   const handleCoordinateChange = (value: string, index: number) => {
+    console.log(value, coordinates)
+    console.log(initialCoordinates)
     setCoordinates(() => {
       const updatedCoordinatesWithNewValue = [...coordinates]
       updatedCoordinatesWithNewValue[index] = value
@@ -56,7 +60,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
     setMarkerInitCoordinates(value)
   }
 
- 
+  
   return (
     <>
       <Form>
@@ -64,13 +68,13 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
         <Space direction='vertical'>
           <Space direction='vertical'>
             <Row gutter={[16, 16]}>
-              { initialCoordinates
+              { coordinates
                 .slice(0, coordinates.length / 2)
                 .map((coordinate, index) => 
                   <Col key={`coordinate_${index}`}>
                     <SimpleCoordinateInput 
-                      initialState={coordinate} 
-                      currentValue={coordinates[index]}
+                      initialState={initialCoordinates[index]} 
+                      currentValue={coordinate}
                       onChange={value => 
                         handleCoordinateChange(value, index)}
                     />
@@ -90,7 +94,10 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
                       currentValue={
                         coordinate
                       }
-                      initialState={coordinate} 
+                      initialState={
+                        //todo: почистить это добро, потому что ну насрано
+                        initialCoordinates[index + initialCoordinates.length / 2]
+                      } 
                       onChange={value => 
                         handleCoordinateChange(
                           value, 

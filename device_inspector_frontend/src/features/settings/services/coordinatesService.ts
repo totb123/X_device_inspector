@@ -16,7 +16,6 @@ const generateGetParams = (searchData: TCoordinatesSearchFormInput) => {
 
 const generateUpdateParams = (settings: TSettings) => {
   const params = new URLSearchParams()
-  console.log(settings)
   // TODO: срочно переписать этот мусор, когда будет время
   params.append('sector_id', settings.sectorId.toString())
   params.append('side', settings.side)

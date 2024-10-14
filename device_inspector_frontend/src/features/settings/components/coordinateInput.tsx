@@ -13,30 +13,24 @@ export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
   onChange,
   currentValue
 }) => {
-  const [
-    coordinateString, 
-    setCoordinateString
-  ] = useState<string>(initialState)
 
   const handleInputChange = (value: string) => {
-    console.log(initialState, coordinateString)
-    setCoordinateString(value)
+    
     onChange(value)
   }
 
   const handleInputReset = () => {
-    setCoordinateString(initialState)
     onChange(initialState)
   }
   
   
   return <Space direction='vertical'>
     <Input 
-      onChange={value =>handleInputChange(value.target.value)}
+      onChange={value => handleInputChange(value.target.value)}
       value={
-        currentValue !== undefined ? currentValue : coordinateString
+        currentValue !== undefined ? currentValue : initialState
       }/>
-    {initialState !== coordinateString && 
+    {initialState !== currentValue && 
       <span style={{color: 'gray', fontSize: '0.8rem'}}>
         (ранее: <a onClick={handleInputReset}>
           {initialState}
