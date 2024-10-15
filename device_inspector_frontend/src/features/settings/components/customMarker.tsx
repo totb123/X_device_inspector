@@ -42,6 +42,11 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
     ])
   }
 
+  useEffect(() => {
+    if (coordinates !== undefined)
+      setInitialCoordinates(coordinates)
+  }, [coordinates])
+
   const changeInputFormValues = (coordinatesPoints: Point[]) => {
     const minPoints = [...coordinatesPoints].reduce(
       (acc: Point, cur: Point) => {

@@ -56,6 +56,7 @@ export const CoordinatesUpdateForm: React.FC<CoordinateUpdateFormProps> = (
       updatedCoordinatesWithNewValue[index] = value
       return updatedCoordinatesWithNewValue
     })
+    showMarker(index, value)
   } 
 
   const showMarker = (index: number, value: string) => {
