@@ -199,14 +199,17 @@ async def get_minio_image(path: str):
     
 
 @app.get('/get_last_image')
-async def get_last_image(sector_id: int, side: str | None = None, specification_id: int | None = None):
+async def get_last_image(sector_id: int, side: str | None = None, specification_id: int | None = None, step: int | None = None):
     # todo: знаю, что решение далеко не лучшее, пока что ничего не пришло в голову
     reversed_inspections = db.get_reversed_inspections_by_sector_id(sector_id)
     if side is None or specification_id is None:
-        inspection = reversed_inspections[0] 
+        if step > len(reversed_inspections) - 1:
+            return {'error': 'File not found'}
+        inspection = reversed_inspections[step] if step else reversed_inspections[0] 
         return {
             'image_path': inspection.url_image,
-            'created_at': inspection.time
+            'created_at': inspection.time,
+            'images_total': len(reversed_inspections)
             }
     else: 
         multiboard_ids = db.get_multiboard_ids_by_specification(specification_id)

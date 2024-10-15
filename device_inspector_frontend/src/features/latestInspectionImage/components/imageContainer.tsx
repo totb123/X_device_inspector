@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/max-len */
 import React, { useEffect, useState } from 'react'
 import { Space, Button, Image, Switch } from 'antd'
 import { useImage } from '../context/latestInspectionImageContext'
@@ -24,14 +25,15 @@ export const ImageContainer: React.FC = () => {
     return `${process.env.REACT_APP_API_BASE_URL}/get_image?path=${image}`
   }
 
-  const handlePreviousSectorClick = () => {
-    if(imageContext.selectedSector !== undefined)
-      imageContext.updateSector(imageContext.selectedSector -= 1 )
+  const handlePreviousImageClick = () => {
+    if(imageContext.currentStep !== undefined)
+      imageContext.updateStep(imageContext.currentStep -= 1 )
   }
-  const handleNextSectorClick = () => {
-    if(imageContext.selectedSector !== undefined)
-      imageContext.updateSector(imageContext.selectedSector += 1 )
+  const handleNextImageClick = () => {
+    if(imageContext.currentStep !== undefined)
+      imageContext.updateStep(imageContext.currentStep += 1 )
   }
+  
   const toggleControlsVisibility = () => {
     if(areControlsVisible)
       setAreControlsVisible(false)
@@ -40,6 +42,7 @@ export const ImageContainer: React.FC = () => {
   }
   const handleBackButtonClick = async () => {
     imageContext.updateSector(undefined)
+    imageContext.updateStep(0)
   }
 
   const handleZoomChange = (
@@ -115,16 +118,20 @@ export const ImageContainer: React.FC = () => {
                     type='link'
                     shape='circle'
                     icon={<LeftOutlined/>}
-                    disabled={imageContext.selectedSector === 1}
-                    onClick={handlePreviousSectorClick}
+                    disabled={imageContext.currentStep === 0}
+                    onClick={handlePreviousImageClick}
                   />
                   <Button
                     style={{backgroundColor: 'white'}}
                     type='link'
                     shape='circle'
                     icon={<RightOutlined/>}
-                    disabled={imageContext.selectedSector === 4}
-                    onClick={handleNextSectorClick}
+                    disabled={
+                      imageContext.totalImages === undefined
+                        ? true                        
+                        : imageContext.currentStep === imageContext.totalImages - 1
+                    }
+                    onClick={handleNextImageClick}
                   />
                 </>
                 }
@@ -208,7 +215,7 @@ export const ImageContainer: React.FC = () => {
                   shape='circle'
                   icon={<LeftOutlined/>}
                   disabled={imageContext.selectedSector === 1}
-                  onClick={handlePreviousSectorClick}
+                  onClick={handlePreviousImageClick}
                 />
                 <Button
                   style={{backgroundColor: 'white'}}
@@ -216,9 +223,29 @@ export const ImageContainer: React.FC = () => {
                   shape='circle'
                   icon={<RightOutlined/>}
                   disabled={imageContext.selectedSector === 4}
-                  onClick={handleNextSectorClick}
+                  onClick={handleNextImageClick}
                 />
               </>}
+              <Button
+                style={{backgroundColor: 'white'}}
+                type='link'
+                shape='circle'
+                icon={<LeftOutlined/>}
+                disabled={imageContext.currentStep === 0}
+                onClick={handlePreviousImageClick}
+              />
+              <Button
+                style={{backgroundColor: 'white'}}
+                type='link'
+                shape='circle'
+                icon={<RightOutlined/>}
+                disabled={
+                  imageContext.totalImages === undefined
+                    ? true                        
+                    : imageContext.currentStep === imageContext.totalImages - 1
+                }
+                onClick={handleNextImageClick}
+              />
             </div>
           }
         </div>
