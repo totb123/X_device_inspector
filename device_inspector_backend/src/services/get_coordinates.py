@@ -1,9 +1,10 @@
 import src.schemas as schemas
 import src.database.db as db
 
-
 def get_coordinates(sector_id: int, side: str, specification_id: int)-> schemas.SectorDMCoordinates:
   db_coordinates = db.get_dm_coordinates(sector_id, side.lower(), specification_id)
+  if db_coordinates is None:
+    return None
   return schemas.SectorDMCoordinates(
     sector_id=db_coordinates.id_sector,
     specification_id=db_coordinates.specification_id,
