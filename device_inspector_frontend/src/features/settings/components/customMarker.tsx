@@ -20,9 +20,12 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
     setCoordinates
   ] = useState<string | undefined>(props.initCoordinates)
   
-  const setInitialCoordinates = (coordinates: string) => {
+  const handlePointsChange = (coordinates: string) => 
+    setPoints(convertCoordinatesToPoints(coordinates))
+
+  const convertCoordinatesToPoints = (coordinates: string) => {
     const formatCoordinates = coordinates.split(',')
-    setPoints([
+    return [
       {
         x: Number(formatCoordinates[2]),
         y: Number(formatCoordinates[0]),
@@ -39,15 +42,11 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
         x: Number(formatCoordinates[3]),
         y: Number(formatCoordinates[0]),
       },
-    ])
+    ]
   }
 
-  useEffect(() => {
-    if (coordinates !== undefined)
-      setInitialCoordinates(coordinates)
-  }, [coordinates])
-
   const changeInputFormValues = (coordinatesPoints: Point[]) => {
+    coordinatesPoints
     const minPoints = [...coordinatesPoints].reduce(
       (acc: Point, cur: Point) => {
         return {
@@ -67,15 +66,52 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
     setCoordinates(coordinates)
   }
 
+  const transformPoints = (updatedPoints: Point[]) => {
+    //todo: не было выбора
+    var newPoints = [...updatedPoints]
+    
+    const changedPoint = updatedPoints.filter(updatedPoint => {
+      return points.findIndex(point => point.x === updatedPoint.x && 
+        point.y === updatedPoint.y) < 0
+    })
+    if (changedPoint.length > 1) return newPoints
+    const pointIndex = updatedPoints.indexOf(changedPoint[0])
+    switch (pointIndex) {
+      case 0:
+        newPoints[3] = {x: newPoints[3].x, y: changedPoint[0].y}
+        newPoints[1] = {x: changedPoint[0].x, y: newPoints[1].y}
+        break
+      case 1: 
+        newPoints[2] = {x: newPoints[2].x, y: changedPoint[0].y}
+        newPoints[0] = {x: changedPoint[0].x, y: newPoints[0].y}
+        break
+      case 2: 
+        newPoints[1] = {x: newPoints[1].x, y: changedPoint[0].y}
+        newPoints[3] = {x: changedPoint[0].x, y: newPoints[3].y}
+        break
+      case 3: 
+        newPoints[0] = {x: newPoints[0].x, y :changedPoint[0].y}
+        newPoints[2] = {x: changedPoint[0].x, y: newPoints[2].y}
+        break
+      default:
+        break
+    }
+    return newPoints
+  }
+
   const handleFragmentApply = () => {
     props.handleCoordinateChange(coordinates ?? '', props.boardIndex!)
   }
 
   useEffect(() => {
     if (props.initCoordinates) 
-      setInitialCoordinates(props.initCoordinates)
-    
+      handlePointsChange(props.initCoordinates)
   }, [props.initCoordinates])
+  
+  useEffect(() => {
+    if (coordinates !== undefined)
+      handlePointsChange(coordinates)
+  }, [coordinates])
 
   return (
     <div>
@@ -89,9 +125,10 @@ export const MapperImage: React.FC<TProps> = (props: TProps) => {
           src={props.path}
           imageStyle={{ width: '1000px', height: '500px'}}
           onChange={(path: Point[]) => {
-            if (path.length == 4) 
-              changeInputFormValues(path)
-            
+            if (path.length == 4) {
+              const transformedPoints = transformPoints(path) 
+              changeInputFormValues(transformedPoints)
+            }
           }}
           onComplete={(path: Point[]) => {
             getCanvas(props.path, path, (err, canvas) => {
