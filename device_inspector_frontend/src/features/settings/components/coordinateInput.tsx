@@ -16,12 +16,14 @@ export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
   currentValue,
   setValidationResult
 }) => {
+
   const debounce = useDebounce()
   const [isError, setIsError] = useState<boolean | string>(false)
   const [
     errorMessage, 
     setErrorMessage
   ] = useState<string | undefined>(undefined)
+
   const handleInputChange = (value: string) => { 
     onChange(value)
     debounce(() => {
@@ -31,6 +33,9 @@ export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
 
   const handleInputReset = () => {
     onChange(initialState)
+    debounce(() => {
+      setValidationResult(validateInput(initialState))
+    }, 500)
   }
   
   const validateInput = (value: string):boolean => {
@@ -44,7 +49,6 @@ export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
       const parsedNumbers = value
         .split(',')
         .map(element => parseInt(element))
-      console.log(parsedNumbers)
       if (parsedNumbers[0] > parsedNumbers[1]) 
       {
         setIsError(true)
@@ -58,7 +62,6 @@ export const SimpleCoordinateInput: React.FC<CoordinateInputProps> = ({
         setErrorMessage('четвертое число должно быть больше третьего')
         return false
       }
-      
     } catch (error) {
       setIsError(true)
       setErrorMessage('Некорректное значение')
