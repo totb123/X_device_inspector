@@ -47,7 +47,6 @@ function generateQuery(filters: SearchFilterContextType,
   
   if (filters.endDate !== undefined)
     target.append('end_date', filters.endDate.toISOString())
-  console.warn(target)
   return target
 }
 

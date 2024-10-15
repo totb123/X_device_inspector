@@ -51,5 +51,6 @@
       "database": "device_inspector_1",
       "username": "postgres"
     }
-  ]
+  ],
+  "git-graph.repository.onlyFollowFirstParent": true
 }
