@@ -166,7 +166,7 @@ export const ImageContainer: React.FC = () => {
                 type='link'
                 shape='circle'
                 icon={<LeftOutlined/>}
-                disabled={imageContext.selectedSector === 1}
+                disabled={imageContext.currentStep === 0}
                 onClick={handlePreviousImageClick}
               />
               <Button
@@ -174,7 +174,11 @@ export const ImageContainer: React.FC = () => {
                 type='link'
                 shape='circle'
                 icon={<RightOutlined/>}
-                disabled={imageContext.selectedSector === 4}
+                disabled={
+                  imageContext.totalImages === undefined
+                    ? true                        
+                    : imageContext.currentStep === imageContext.totalImages - 1
+                }
                 onClick={handleNextImageClick}
               />
             </div>
